@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Attack.cs" />
     <Compile Include="Country.cs" />
     <Compile Include="Database\ElasticController.cs" />
     <Compile Include="Database\IDatabaseController.cs" />

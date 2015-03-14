@@ -13,13 +13,14 @@ namespace ServersVSHackers_V1
     {
 
         private readonly IDatabaseController _dbController;
+        private Boolean is
         private const string ATTACK_LOG_TABLE = "attack_logs";
 
         public SimulationEngine()
         {
             // connect to local elastic database
             var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node, defaultIndex: "my-application");
+            var settings = new ConnectionSettings(node, defaultIndex: ATTACK_LOG_TABLE);
             _dbController = new ElasticController(settings);
         }
 
@@ -28,6 +29,10 @@ namespace ServersVSHackers_V1
             _dbController.CreateDatabase(ATTACK_LOG_TABLE);
         }
 
+        private void StoreAttacks(IEnumerable<Attack> attacks )
+        {
+            _dbController.Insert(attacks);
+        }
 
 
 
