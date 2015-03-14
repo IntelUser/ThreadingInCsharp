@@ -15,7 +15,7 @@ namespace ServersVSHackers_V1.Database
         /// <typeparam name="T"> Represents the type of object that needs to be stored</typeparam>
         /// <param name="item">the object itself</param>
         /// <returns>the execution time in milliseconds</returns>
-        long Insert<T>(T item);
+        bool Insert<T>(IEnumerable<T> items);
         /// <summary>
         /// Removes a complete database. Use with caution! Data is lost completely and cannot be recovered!
         /// </summary>
@@ -23,13 +23,14 @@ namespace ServersVSHackers_V1.Database
         /// <returns>True if deletion is succesfull or false when the action did not complete</returns>
         Boolean RemoveDatabase(String databaseName);
 
+        Boolean CreateDatabase(String databaseName);
+
         /// <summary>
         /// Search a database
         /// </summary>
         /// <param name="searchPhrase">A string that mathes the search</param>
         /// <returns>An Ienumerable with mathing results</returns>
-        IEnumerable<T> Search<T>(string searchPhrase);
-
+        IEnumerable<T> Search<T>(String databaseName, int limitResults = 10) where T : class;
 
 
     }
