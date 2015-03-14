@@ -54,7 +54,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Country.cs" />
-    <Compile Include="DBController.cs" />
+    <Compile Include="Database\ElasticController.cs" />
+    <Compile Include="Database\IDatabaseController.cs" />
     <Compile Include="Generator.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="SimulationEngine.cs" />
