@@ -1,0 +1,38 @@
+﻿<Window x:Class="ServersVSHackers_V1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:properties="clr-namespace:ServersVSHackers_V1.Properties"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+
+        <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="299" Width="189">
+            <Grid>
+                <GroupBox Header="Balance" Margin="0,19,0,145">
+                    <Grid>
+                        <Slider Thumb.DragCompleted="MySlider_DragCompleted" HorizontalAlignment="Center" Margin="10,46,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="EntitySlider" Maximum="9" Minimum="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=balanceValue}" ValueChanged="EntitySlider_ValueChanged" SmallChange="1" TickFrequency="1"/>
+                        <Label Content="Hackers" HorizontalAlignment="Left" Margin="0,55,0,0" VerticalAlignment="Top"/>
+                        <Label Content="Servers" HorizontalAlignment="Left" Margin="117,55,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="70,10,0,0" TextWrapping="Wrap" Text="{Binding ElementName=EntitySlider,Path=Value}" VerticalAlignment="Top" Width="18" IsReadOnly="True"/>
+                    </Grid>
+                </GroupBox>
+                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,137,0,0" VerticalAlignment="Top" Height="59" Width="177">
+                    <Grid>
+                        <Button Content="Start" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="45" Name="StartButton"/>
+                        <Button Content="Pause" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="45" Name="PauseButton"/>
+                        <Button Content="Exit" HorizontalAlignment="Left" Margin="120,10,0,0" VerticalAlignment="Top" Width="45" Name="ExitButton"/>
+
+                    </Grid>
+                </GroupBox>
+                
+
+
+            </Grid>
+
+
+        </GroupBox>
+
+
+
+
+    </Grid>
+</Window>
