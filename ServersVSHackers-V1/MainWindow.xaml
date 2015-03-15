@@ -58,6 +58,13 @@
                 </FlowDocument>
             </RichTextBox>
         </GroupBox>
+        <Button Name="AttackButton" HorizontalAlignment="Left" Height="105" Margin="796,755,0,0" VerticalAlignment="Top" Width="418" BorderBrush="#FFDC1717" Click="AttackButton_Click">
+            <StackPanel Orientation="Horizontal" Margin="10">
+                <Image Source="attack.jpg" Width="418" Height="80" Margin="0,0,0,0"/>
+                <TextBlock></TextBlock>
+            </StackPanel>
+        </Button>
+        <Button Name="MoreButton" Content="More!!!!!!!!!!!!" HorizontalAlignment="Left" Margin="1300,782,0,0" VerticalAlignment="Top" Width="164" RenderTransformOrigin="0.613,1.864" Height="45" FontFamily="Stencil" FontSize="22" FontWeight="Bold" Click="Button_Click"/>
 
 
 

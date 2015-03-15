@@ -29,6 +29,7 @@ namespace ServersVSHackers_V1
 
         Country C{ get; set; }
 
+        int Cash { get; set; }
         SimulationEngine.ValidPoint Coordinate {get; set;}
 
     }

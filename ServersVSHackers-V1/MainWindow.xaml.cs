@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,12 +23,14 @@ namespace ServersVSHackers_V1
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly System.Windows.Threading.DispatcherTimer _threadOne = new System.Windows.Threading.DispatcherTimer();
+        readonly System.Windows.Threading.DispatcherTimer _threadTwo = new System.Windows.Threading.DispatcherTimer();
+        readonly System.Windows.Threading.DispatcherTimer _threadThree = new System.Windows.Threading.DispatcherTimer();
+        private int threadCounter = 0;
         public SimulationEngine engine;
         public MainWindow()
         {
-            InitializeComponent();
-            
-            
+            InitializeComponent();                        
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = ib;
@@ -37,6 +40,7 @@ namespace ServersVSHackers_V1
         public void Log(string log)
         {                      
             LogTextBox.Document.Blocks.Add(new Paragraph(new Run(log)));
+            LogTextBox.ScrollToEnd();
         }
 
         private void EntitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -74,9 +78,12 @@ namespace ServersVSHackers_V1
                 var yMin = country.Points.Min(p => p.Y);
                 var countrylabel = new TextBlock();
                 countrylabel.Text = country.Name;
+                countrylabel.Text = Name;
+                countrylabel.FontSize = 28;
+                countrylabel.TextDecorations = TextDecorations.Underline;
                 Panel.SetZIndex(countrylabel, 10);
-                Canvas.SetLeft(countrylabel, xMin);
-                Canvas.SetTop(countrylabel, yMin);
+                Canvas.SetLeft(countrylabel, xMin+50.0);
+                Canvas.SetTop(countrylabel, yMin+50.0);
                 WorldCanvas.Children.Add(countrylabel);
                 WorldCanvas.Children.Add(country);
             }
@@ -91,5 +98,82 @@ namespace ServersVSHackers_V1
             engine.GenerateEntities();
         }
 
+        private void AttackButton_Click(object sender, RoutedEventArgs e)
+        {            
+            _threadOne.Tick += ThreadOneTick;
+            _threadOne.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            _threadOne.Start();
+            threadCounter++;
+            AttackButton.IsEnabled = false;
+        }
+
+
+        private void ThreadOneTick(object sender, EventArgs e)
+        {
+             engine.PerformAttack(Brushes.Orange);
+        }
+
+        private void ThreadTwoTick(object sender, EventArgs e)
+        {
+            threadCounter++;
+            Task.Factory.StartNew(AttackTwo);            
+        }
+
+        private void ThreadThreeTick(object sender, EventArgs e)
+        {
+            threadCounter++;
+            Task.Factory.StartNew(AttackThree);
+        }
+        private void AttackTwo()
+        {
+            engine.PerformAttack(Brushes.IndianRed);
+        }
+
+        private void AttackThree()
+        {
+            engine.PerformAttack(Brushes.GreenYellow);          
+        }
+        
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            AddAttack();
+        }
+
+        private void AddAttack()
+        {
+            if (threadCounter.Equals(1))
+            {
+                _threadTwo.Tick += ThreadTwoTick;
+                _threadTwo.Interval = new TimeSpan(0, 0, 0, 0, 200);
+                _threadTwo.Start();
+            }
+            else if (threadCounter.Equals(2))
+            {
+                _threadThree.Tick += ThreadThreeTick;
+                _threadThree.Interval = new TimeSpan(0, 0, 0, 0, 400);
+                _threadThree.Start();
+            }
+            else
+            {
+                MoreButton.IsEnabled = false;
+                for (int i = 0; i < 50; i++)
+                {
+                    Log("ITS ENOUGH!!!");
+                }
+            }
+
+
+
+        }
+        public void HackersWin(int c)
+        {
+            MessageBox.Show("Hackers WIN!! They've stolen €" + c.ToString());
+        }
+
+        public void ServersWin(int c)
+        {
+            MessageBox.Show("Servers WIN!! They didn't lose €" + c.ToString());
+
+        }
     }
 }

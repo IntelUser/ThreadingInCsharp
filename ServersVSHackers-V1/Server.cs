@@ -9,7 +9,8 @@ namespace ServersVSHackers_V1
     class Server : IEntity
     {
         private bool _isAlive;
-        private int _cash, _protectionLevel;
+        public int Cash { get; set; }
+        public int ProtectionLevel { get; private set; }
         private SimulationEngine.ValidPoint coordinate;
 
         public Country country { get; set; }
@@ -17,8 +18,8 @@ namespace ServersVSHackers_V1
 
         public Server(int cashAmount, int protectionLevel)
         {
-            _cash = cashAmount;
-            _protectionLevel = protectionLevel;
+            Cash = cashAmount;
+            ProtectionLevel = protectionLevel;
         }
 
         public void Action()
@@ -33,7 +34,7 @@ namespace ServersVSHackers_V1
 
         public void UpdateCashAmount(int amount)
         {
-            _cash += amount;
+            Cash += amount;
         }
 
         public void SetDead()

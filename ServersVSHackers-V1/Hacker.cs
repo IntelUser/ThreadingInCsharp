@@ -11,7 +11,9 @@ namespace ServersVSHackers_V1
         private readonly int _id;
         private bool _isAlive;
         private int _skillLevel, _cash;
-        public int Cash { get { return _cash; } }
+        public int Cash { get { return _cash; }
+           set { }
+        }
         public int SkillLevel { get { return _skillLevel; } }
         private SimulationEngine.ValidPoint coordinate;
 

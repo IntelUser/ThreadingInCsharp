@@ -35,14 +35,14 @@
         <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=CreateCanvas}" Width="{Binding ActualWidth, ElementName=CreateCanvas}" VerticalAlignment="Top">
             <Canvas x:Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
         </Border>
-        <TextBox Name="CountryTextBox" Margin="10,774,1262,62" TextWrapping="Wrap" Text="CountryName" Width="120" PreviewKeyDown="CountryTextBox_PreviewKeyDown" />
-        <Button Name="SaveCountryButton" Content="Save Country" HorizontalAlignment="Left" Margin="150,786,0,0" VerticalAlignment="Top" Width="76" Click="SaveCountryButton_Click"/>
-        <Label Content="Click on coordinates to make a polygon shape. Use your common sense!" HorizontalAlignment="Left" Margin="0,816,0,0" VerticalAlignment="Top"/>
-        <Button Name="ResetButton" Content="Reset" HorizontalAlignment="Left" Margin="438,818,0,0" VerticalAlignment="Top" Width="75" Click="ResetButton_Click"/>
-        <Label Content="Countries must not overlap! Limit is 5! Click reset to start over." HorizontalAlignment="Left" Margin="438,786,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.539,-0.192"/>
-        <Button Name="DeleteLastButton" Content="Delete last" HorizontalAlignment="Left" Margin="527,818,0,0" VerticalAlignment="Top" Width="75" Click="DeleteLastButton_Click"/>
-        <Button Name="SaveWorldButton" Content="Save World" HorizontalAlignment="Left" Margin="248,788,0,0" VerticalAlignment="Top" Width="75" Click="SaveWorldButton_Click"/>
-        <Label Content="Use right mouse button to save a country." HorizontalAlignment="Left" Margin="0,842,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="CountryTextBox" Margin="10,774,1247,46" TextWrapping="Wrap" Text="DefaultCountry" PreviewKeyDown="CountryTextBox_PreviewKeyDown" />
+        <Button Name="SaveCountryButton" Content="Save Country" HorizontalAlignment="Left" Margin="167,774,0,0" VerticalAlignment="Top" Width="76" Click="SaveCountryButton_Click"/>
+        <Label Content="Click on coordinates to make a polygon shape. Use your common sense!" HorizontalAlignment="Left" Margin="409,810,0,0" VerticalAlignment="Top"/>
+        <Button Name="ResetButton" Content="Reset" HorizontalAlignment="Left" Margin="298,774,0,0" VerticalAlignment="Top" Width="75" Click="ResetButton_Click"/>
+        <Label Content="Countries must not overlap! Limit is 5! Click reset to start over." HorizontalAlignment="Left" Margin="409,774,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.539,-0.192"/>
+        <Button Name="DeleteLastButton" Content="Delete last" HorizontalAlignment="Left" Margin="298,810,0,0" VerticalAlignment="Top" Width="75" Click="DeleteLastButton_Click"/>
+        <Button Name="SaveWorldButton" Content="Save World" HorizontalAlignment="Left" Margin="167,810,0,0" VerticalAlignment="Top" Width="75" Click="SaveWorldButton_Click"/>
+        <Label Content="Use right mouse button to save a country." HorizontalAlignment="Left" Margin="845,774,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

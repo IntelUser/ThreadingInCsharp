@@ -22,7 +22,7 @@ namespace ServersVSHackers_V1
         private int numberOfCountries;
         private PointCollection pointCollection = new PointCollection();
         private readonly List<Polygon> countriesList = new List<Polygon>();
-
+        private bool canSave = true;
         public LevelDesigner(MainWindow parentWindow)
         {
             _parentWindow = parentWindow;
@@ -61,29 +61,33 @@ namespace ServersVSHackers_V1
 
         private void SaveCountryButton_Click(object sender, RoutedEventArgs e)
         {
-            //persists drawn points to a 
-            numberOfCountries++;
-            var country = CreatePolygon(CountryTextBox.Text, pointCollection);
-            CreateCanvas.Children.Add(country);
-            countriesList.Add(country);
-            pointCollection = null;
-            pointCollection = new PointCollection();
-            //limit of 5 countries for performance reasons
-            if (numberOfCountries.Equals(5))
+            if (canSave)
             {
-                MessageBox.Show("Limit reached!");
-                SaveCountryButton.IsEnabled = false;
-                CountryTextBox.IsEnabled = false;
+                //persists drawn points to a 
+                numberOfCountries++;
+                var country = CreatePolygon(CountryTextBox.Text, pointCollection);
+                CreateCanvas.Children.Add(country);
+                countriesList.Add(country);
+                pointCollection = null;
+                pointCollection = new PointCollection();
+                //limit of 5 countries for performance reasons
+                if (numberOfCountries.Equals(5))
+                {
+                    MessageBox.Show("Limit reached!");
+                    SaveCountryButton.IsEnabled = false;
+                    CountryTextBox.IsEnabled = false;
+                }
             }
+            canSave = false;
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            {
-                //reads x-y coordinates from mouseclick on canvas
-                var p = Mouse.GetPosition(CreateCanvas);
-                pointCollection.Add(p);
-            }
+            canSave = true;
+            //reads x-y coordinates from mouseclick on canvas
+            var p = Mouse.GetPosition(CreateCanvas);
+            pointCollection.Add(p);
+            
         }
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
@@ -110,6 +114,7 @@ namespace ServersVSHackers_V1
                     select r;
                 var result = removeLabel.First();
                 CreateCanvas.Children.Remove(result);
+                numberOfCountries--;
             }
             catch (Exception)
             {
