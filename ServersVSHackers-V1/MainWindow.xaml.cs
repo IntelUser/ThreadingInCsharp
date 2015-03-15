@@ -167,11 +167,17 @@ namespace ServersVSHackers_V1
         }
         public void HackersWin(int c)
         {
+            _threadOne.Stop();
+            _threadTwo.Stop();
+            _threadThree.Stop();
             MessageBox.Show("Hackers WIN!! They've stolen €" + c.ToString());
         }
 
         public void ServersWin(int c)
         {
+            _threadOne.Stop();
+            _threadTwo.Stop();
+            _threadThree.Stop();
             MessageBox.Show("Servers WIN!! They didn't lose €" + c.ToString());
 
         }
