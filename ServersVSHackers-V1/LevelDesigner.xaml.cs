@@ -42,27 +42,33 @@ namespace ServersVSHackers_V1
             polygon.Stroke = new SolidColorBrush(Colors.Green);
 
             polygon.Fill = Brushes.LightGreen;
-
+            //determine left-top most coordinate of polygon
             var xMin = pc.Min(p => p.X);
             var yMin = pc.Min(p => p.Y);
             
+            //create label for country name
             var countrylabel = new TextBlock();
             countrylabel.Text = Name;
+            countrylabel.FontSize = 28;
+            countrylabel.TextDecorations = TextDecorations.Underline;
             Panel.SetZIndex(countrylabel, 10);
-            Canvas.SetLeft(countrylabel, xMin);
-            Canvas.SetTop(countrylabel, yMin);
+            //educated guess for placement of label
+            Canvas.SetLeft(countrylabel, xMin+50.0);
+            Canvas.SetTop(countrylabel, yMin+50.0);
             CreateCanvas.Children.Add(countrylabel);
             return polygon;
         }
 
         private void SaveCountryButton_Click(object sender, RoutedEventArgs e)
         {
+            //persists drawn points to a 
             numberOfCountries++;
             var country = CreatePolygon(CountryTextBox.Text, pointCollection);
             CreateCanvas.Children.Add(country);
             countriesList.Add(country);
             pointCollection = null;
             pointCollection = new PointCollection();
+            //limit of 5 countries for performance reasons
             if (numberOfCountries.Equals(5))
             {
                 MessageBox.Show("Limit reached!");
@@ -82,6 +88,7 @@ namespace ServersVSHackers_V1
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            //clears all canvas children
             CreateCanvas.Children.Clear();
             countriesList.Clear();
             SaveCountryButton.IsEnabled = true;
@@ -91,6 +98,7 @@ namespace ServersVSHackers_V1
 
         private void DeleteLastButton_Click(object sender, RoutedEventArgs e)
         {
+            //delete last added country and its label
             try
             {
                 var removeCountry = countriesList.Last();
@@ -105,6 +113,7 @@ namespace ServersVSHackers_V1
             }
             catch (Exception)
             {
+                //TODO
             }
         }
 

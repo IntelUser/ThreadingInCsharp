@@ -21,7 +21,8 @@ namespace ServersVSHackers_V1
 {
     public class SimulationEngine
     {
-        
+        ManualResetEvent syncEvent = new ManualResetEvent(false);
+
         public ConcurrentBag<IEntity> ActiveHackers, BustedHackers;
         public ConcurrentBag<IEntity> ActiveServers, HackedServers;
         List<Country> CountryList = new List<Country>(); 
@@ -45,8 +46,25 @@ namespace ServersVSHackers_V1
 
         }
 
+        private void SetStatus(string text, Brush brush)
+        {
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                mainWindow.StatusTextBlock.Text = text;
+                if (brush == null)
+            {
+                mainWindow.StatusTextBlock.Background = Brushes.Green;
+            }
+            else
+            {
+                mainWindow.StatusTextBlock.Background = brush;
+            }
+            }));
+            
+        }
         public void GenerateEntities()
         {
+            SetStatus("Generating entities", Brushes.Red);
             //one MILLION entities
             int _numberOfEntities = Convert.ToInt32(Properties.Settings.Default.numberOfEntities);
             // balance = 1 (limit) is 10% hackers, 90% servers
@@ -75,7 +93,7 @@ namespace ServersVSHackers_V1
             Parallel.For(0, _numberOfHackers, i => ActiveHackers.Add(new Hacker(
                                                                                 Generator.GetRandomNumber(100, 10000),
                                                                                 Generator.GetRandomNumber(1, 100))));
-            
+
             t.Stop();
             mainWindow.Log("Generation took: " + t.ElapsedMilliseconds);
             GenerateCountries();
@@ -128,6 +146,8 @@ namespace ServersVSHackers_V1
 
         private void GenerateCountries()
         {
+            SetStatus("Generating countries.", Brushes.Red);
+
             foreach (var polygon in Environment.World)
             {
                 CountryList.Add(new Country(polygon.Name, DefinePixelsinCountries(polygon)));
@@ -141,6 +161,8 @@ namespace ServersVSHackers_V1
 
         private void AssignCountries()
         {
+            SetStatus("Assigning countries.", Brushes.Red);
+
             //ergens anders? : 
             Random rnd = new Random();
             Parallel.ForEach(ActiveHackers, currentHacker =>
@@ -156,7 +178,8 @@ namespace ServersVSHackers_V1
 
         private void AssignCoordinates()
         {
-            
+            SetStatus("Assigning coordinates.", Brushes.Red);
+
             foreach (var hacker in ActiveHackers)
             {
                 
@@ -169,15 +192,17 @@ namespace ServersVSHackers_V1
                 server.Coordinate = server.C.GetValidPoint();
                 Console.WriteLine("server x= {0}, y= {1}", server.Coordinate.X, server.Coordinate.Y);
             }
+            syncEvent.Set();
+
         }
 
         private void PlaceEntitiesOnWorld()
         {
-        
 
+            syncEvent.WaitOne();
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-
+                SetStatus("Placing entities.", Brushes.Red);
                 foreach (var hacker in ActiveHackers)
                 {
                     
@@ -210,9 +235,9 @@ namespace ServersVSHackers_V1
                     //tt.Stop();
                     //MessageBox.Show(tt.ElapsedTicks.ToString());
                 }
+                SetStatus("Ready...", null);
 
             }));
-        
         }
 
         public List<ValidPoint> DefinePixelsinCountries(Polygon poly)

@@ -20,7 +20,7 @@
 
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Height="59" Width="177">
+                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Height="74" Width="177">
                     <Grid>
                         <Button Content="Start" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="45" Name="StartButton" Click="StartButton_Click"/>
                         <Button Content="Pause" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="45" Name="PauseButton"/>
@@ -28,7 +28,7 @@
 
                     </Grid>
                 </GroupBox>
-                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="23,340,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
+                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="31,316,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
 
 
 
@@ -42,17 +42,22 @@
             <Canvas x:Name="WorldCanvas" HorizontalAlignment="Right" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
 
         </Border>
-        <RichTextBox FontFamily="Courier" Name="LogTextBox" HorizontalAlignment="Left" Height="130" Margin="10,458,0,0" VerticalAlignment="Top" Width="189">
-            <FlowDocument>
-                <Paragraph>
-                    <Run Text="Log"/>
-                </Paragraph>
-            </FlowDocument>
-        </RichTextBox>
         <Label Name="HackerAmountLabel" Content="Number of hackers remaining" HorizontalAlignment="Left" Height="30" Margin="255,782,0,0" VerticalAlignment="Top" Width="178"/>
         <Label Name="ServerAmountLabel" Content="Number of servers remaining" HorizontalAlignment="Left" Margin="525,782,0,0" VerticalAlignment="Top"/>
         <TextBlock Name="HackerAmountTextBlock" HorizontalAlignment="Left" Margin="323,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FFFF0011"/>
         <TextBlock Name="ServerAmountTextBlock" HorizontalAlignment="Left" Margin="596,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FF1D00FF"/>
+        <GroupBox Header="Status" HorizontalAlignment="Left" Margin="10,743,0,0" VerticalAlignment="Top" Height="65" Width="189">
+            <TextBlock Name="StatusTextBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Ready..." VerticalAlignment="Top" Background="#FF00FF4C"/>
+        </GroupBox>
+        <GroupBox Header="Logs" HorizontalAlignment="Left" Margin="10,467,0,0" VerticalAlignment="Top" Height="256" Width="189">
+            <RichTextBox FontFamily="Courier" x:Name="LogTextBox" HorizontalAlignment="Left" Height="222" Margin="0,10,-2,0" VerticalAlignment="Top" Width="179">
+                <FlowDocument>
+                    <Paragraph>
+                        <Run Text=""/>
+                    </Paragraph>
+                </FlowDocument>
+            </RichTextBox>
+        </GroupBox>
 
 
 
