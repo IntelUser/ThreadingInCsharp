@@ -10,15 +10,12 @@ namespace ServersVSHackers_V1
     {
         private bool _isAlive;
         private int _cash, _protectionLevel;
-        private Country _country;
 
 
-
-        public Server(int cashAmount, int protectionLevel, Country country)
+        public Server(int cashAmount, int protectionLevel)
         {
             _cash = cashAmount;
             _protectionLevel = protectionLevel;
-            _country = country;
         }
 
         public void Action()

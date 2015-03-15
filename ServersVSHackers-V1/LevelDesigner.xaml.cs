@@ -45,8 +45,7 @@ namespace ServersVSHackers_V1
 
             var xMin = pc.Min(p => p.X);
             var yMin = pc.Min(p => p.Y);
-            MessageBox.Show(String.Format("x: {0}, y= {1}", xMin, yMin));
-
+            
             var countrylabel = new TextBlock();
             countrylabel.Text = Name;
             Panel.SetZIndex(countrylabel, 10);
@@ -120,13 +119,19 @@ namespace ServersVSHackers_V1
             
 
             //set current list of polygons to Environment
-            Environment.world = countriesList;
+            Environment.World = countriesList;
 
             //force update of simulation world canvas
             _parentWindow.UpdateWorld();
 
             CreateCanvas = null;
             Close();
+        }
+
+        private void Window_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            SaveCountryButton_Click(sender, e);
+
         }
     }
 }

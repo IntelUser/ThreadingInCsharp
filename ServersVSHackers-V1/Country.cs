@@ -6,13 +6,17 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    
-    public enum Country
+    class Country
     {
-        Z0rG = 1,
-        B9sG = 2,
-        NSG6 = 3,
-        L33T = 4,
-        JSY7 = 5
+        string Name { get; set; }
+        private List<SimulationEngine.ValidPoint> validPoints;
+        
+        public Country(string name, List<SimulationEngine.ValidPoint> list)
+        {
+            Name = name;
+            validPoints = list;
+        }
+
     }
+   
 }

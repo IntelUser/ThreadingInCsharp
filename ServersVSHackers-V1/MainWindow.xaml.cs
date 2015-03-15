@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -21,14 +22,21 @@ namespace ServersVSHackers_V1
     /// </summary>
     public partial class MainWindow : Window
     {
-        SimulationEngine engine;
+        public SimulationEngine engine;
         public MainWindow()
         {
             InitializeComponent();
-            SimulationEngine engine = new SimulationEngine();
+            
+            
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = ib;
+        
+        }
+
+        public void Log(string log)
+        {                      
+            LogTextBox.Document.Blocks.Add(new Paragraph(new Run(log)));
         }
 
         private void EntitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -52,8 +60,16 @@ namespace ServersVSHackers_V1
         public void UpdateWorld()
         {
             WorldCanvas.Children.Clear();
-            foreach (var country in Environment.world)
+            foreach (var country in Environment.World)
             {
+                country.Effect =
+                    new DropShadowEffect
+                    {
+                        Color = new Color {A = 255, R = 255, G = 255, B = 255},
+                        Direction = 320,
+                        ShadowDepth = 8,
+                        Opacity = 0.7
+                    };
                 var xMin = country.Points.Min(p => p.X);
                 var yMin = country.Points.Min(p => p.Y);
                 var countrylabel = new TextBlock();
@@ -64,18 +80,16 @@ namespace ServersVSHackers_V1
                 WorldCanvas.Children.Add(countrylabel);
                 WorldCanvas.Children.Add(country);
             }
-
-            
-
-            
-
-
-
-
         }
 
-
-
+        private void StartButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (engine == null)
+            {
+                engine = new SimulationEngine(this);
+            }
+            engine.GenerateEntities();
+        }
 
     }
 }

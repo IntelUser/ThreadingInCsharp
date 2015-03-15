@@ -5,25 +5,30 @@
         Title="MainWindow" Height="900" Width="1650">
     <Grid>
 
-        <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="299" Width="189">
+        <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="434" Width="189">
             <Grid>
-                <GroupBox Header="Balance" Margin="0,19,0,145">
-                    <Grid>
-                        <Slider Thumb.DragCompleted="MySlider_DragCompleted" HorizontalAlignment="Center" Margin="10,46,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="EntitySlider" Maximum="9" Minimum="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=balanceValue}" ValueChanged="EntitySlider_ValueChanged" SmallChange="1" TickFrequency="1"/>
+                <GroupBox Header="Balance" Margin="0,19,0,10">
+                    <Grid >
+                        <Slider Thumb.DragCompleted="MySlider_DragCompleted" HorizontalAlignment="Center" Margin="10,38,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="EntitySlider" Maximum="9" Minimum="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=balanceValue}" ValueChanged="EntitySlider_ValueChanged" SmallChange="1" TickFrequency="1"/>
                         <Label Content="Hackers" HorizontalAlignment="Left" Margin="0,55,0,0" VerticalAlignment="Top"/>
                         <Label Content="Servers" HorizontalAlignment="Left" Margin="117,55,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,10,0,0" TextWrapping="Wrap" Text="{Binding ElementName=EntitySlider,Path=Value}" VerticalAlignment="Top" Width="18" IsReadOnly="True"/>
+
+                        <Slider HorizontalAlignment="Center" Margin="10,133,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="TotalEntitiesSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=numberOfEntities}" Maximum="1000000" Minimum="10000" TickFrequency="10000" />
+                        <Label Content="Entities" HorizontalAlignment="Left" Margin="0,160,0,0" VerticalAlignment="Top"/>
+                        <TextBox HorizontalAlignment="Left" Height="23" Margin="70,102,0,0" TextWrapping="NoWrap"  Text="{Binding ElementName=TotalEntitiesSlider,Path=Value}" VerticalAlignment="Top" Width="73" IsReadOnly="True"/>
+
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,137,0,0" VerticalAlignment="Top" Height="59" Width="177">
+                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Height="59" Width="177">
                     <Grid>
-                        <Button Content="Start" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="45" Name="StartButton"/>
+                        <Button Content="Start" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="45" Name="StartButton" Click="StartButton_Click"/>
                         <Button Content="Pause" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="45" Name="PauseButton"/>
                         <Button Content="Exit" HorizontalAlignment="Left" Margin="120,10,0,0" VerticalAlignment="Top" Width="45" Name="ExitButton"/>
 
                     </Grid>
                 </GroupBox>
-                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="10,201,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
+                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="23,340,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
 
 
 
@@ -33,10 +38,18 @@
         </GroupBox>
 
         <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=WorldCanvas}" Width="{Binding ActualWidth, ElementName=WorldCanvas}" VerticalAlignment="Top" HorizontalAlignment="Right">
-            
+
             <Canvas x:Name="WorldCanvas" HorizontalAlignment="Right" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
 
         </Border>
+        <RichTextBox FontFamily="Courier" Name="LogTextBox" HorizontalAlignment="Left" Height="130" Margin="10,458,0,0" VerticalAlignment="Top" Width="189">
+            <FlowDocument>
+                <Paragraph>
+                    <Run Text="Log"/>
+                </Paragraph>
+            </FlowDocument>
+        </RichTextBox>
+
 
 
     </Grid>
