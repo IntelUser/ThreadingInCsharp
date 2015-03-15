@@ -13,7 +13,7 @@ namespace ServersVSHackers_V1
     {
 
         private readonly IDatabaseController _dbController;
-        private Boolean is
+        //private Boolean is
         private const string ATTACK_LOG_TABLE = "attack_logs";
 
         public SimulationEngine()
