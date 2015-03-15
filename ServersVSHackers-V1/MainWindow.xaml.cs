@@ -21,11 +21,14 @@ namespace ServersVSHackers_V1
     /// </summary>
     public partial class MainWindow : Window
     {
+        SimulationEngine engine;
         public MainWindow()
         {
             InitializeComponent();
-            LevelDesigner ldDesigner = new LevelDesigner();
-            ldDesigner.Show();
+            SimulationEngine engine = new SimulationEngine();
+            ImageBrush ib = new ImageBrush();
+            ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
+            WorldCanvas.Background = ib;
         }
 
         private void EntitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -40,5 +43,39 @@ namespace ServersVSHackers_V1
             Properties.Settings.Default.Save();
             Console.WriteLine(@"Saved balanceValue = {0}", Properties.Settings.Default.balanceValue);
         }
+
+        private void LevelDesignerButton_Click(object sender, RoutedEventArgs e)
+        {
+           new LevelDesigner(this).Show();
+        }
+
+        public void UpdateWorld()
+        {
+            WorldCanvas.Children.Clear();
+            foreach (var country in Environment.world)
+            {
+                var xMin = country.Points.Min(p => p.X);
+                var yMin = country.Points.Min(p => p.Y);
+                var countrylabel = new TextBlock();
+                countrylabel.Text = country.Name;
+                Panel.SetZIndex(countrylabel, 10);
+                Canvas.SetLeft(countrylabel, xMin);
+                Canvas.SetTop(countrylabel, yMin);
+                WorldCanvas.Children.Add(countrylabel);
+                WorldCanvas.Children.Add(country);
+            }
+
+            
+
+            
+
+
+
+
+        }
+
+
+
+
     }
 }

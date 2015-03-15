@@ -5,7 +5,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TestWW3;
 
 namespace ServersVSHackers_V1
 {
@@ -14,14 +16,16 @@ namespace ServersVSHackers_V1
     /// </summary>
     public partial class LevelDesigner : Window
     {
+        public MainWindow _parentWindow;
         private bool _savingCoordinates = false;
         private int MAX_COUNTRIES = 5;
         private int numberOfCountries;
         private PointCollection pointCollection = new PointCollection();
         private readonly List<Polygon> countriesList = new List<Polygon>();
 
-        public LevelDesigner()
+        public LevelDesigner(MainWindow parentWindow)
         {
+            _parentWindow = parentWindow;
             InitializeComponent();
         }
 
@@ -36,7 +40,9 @@ namespace ServersVSHackers_V1
             polygon.Name = Name;
             polygon.Points = pc;
             polygon.Stroke = new SolidColorBrush(Colors.Green);
-            polygon.Fill = new SolidColorBrush(Colors.Yellow);
+
+            polygon.Fill = (VisualBrush)this.Resources["HatchBrush"];
+
             var xMin = pc.Min(p => p.X);
             var yMin = pc.Min(p => p.Y);
             MessageBox.Show(String.Format("x: {0}, y= {1}", xMin, yMin));
@@ -53,7 +59,6 @@ namespace ServersVSHackers_V1
         private void SaveCountryButton_Click(object sender, RoutedEventArgs e)
         {
             numberOfCountries++;
-            //CreateCanvas.Children.Add(CreatePolygon(CountryTextBox.Text, pointCollection));
             var country = CreatePolygon(CountryTextBox.Text, pointCollection);
             CreateCanvas.Children.Add(country);
             countriesList.Add(country);
@@ -106,8 +111,22 @@ namespace ServersVSHackers_V1
 
         private void SaveWorldButton_Click(object sender, RoutedEventArgs e)
         {
+            //cleanup used canvas and remove parent relationships
+            var polygons = CreateCanvas.Children.OfType<Polygon>().ToList();
+            foreach (var polygon in polygons)
+            {
+                CreateCanvas.Children.Remove(polygon);
+            }
+            
+
+            //set current list of polygons to Environment
             Environment.world = countriesList;
-            this.Close();
+
+            //force update of simulation world canvas
+            _parentWindow.UpdateWorld();
+
+            CreateCanvas = null;
+            Close();
         }
     }
 }

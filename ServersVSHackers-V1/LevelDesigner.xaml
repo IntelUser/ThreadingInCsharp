@@ -3,6 +3,34 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LevelDesigner" Height="900
         " Width="1400" MouseLeftButtonDown="Window_MouseLeftButtonDown">
+    <Window.Resources>
+        <VisualBrush 
+    x:Key="DotFillBrush" 
+    TileMode="Tile" 
+    Viewport="0,0,10,10" 
+    ViewportUnits="Absolute" 
+    Viewbox="0,0,12,12"
+    ViewboxUnits="Absolute">
+            <VisualBrush.Visual>
+                <Ellipse 
+        Fill="#00C0FF" 
+        Width="10" Height="10" />
+            </VisualBrush.Visual>
+        </VisualBrush>
+        <VisualBrush 
+      x:Key="HatchBrush" 
+      TileMode="Tile" Viewport="0,0,10,10" 
+      ViewportUnits="Absolute" Viewbox="0,0,10,10"    
+      ViewboxUnits="Absolute">
+            <VisualBrush.Visual>
+                <Canvas>
+                    <Rectangle Fill="Azure" Width="10" Height="10" />
+                    <Path Stroke="Purple" Data="M 0 0 l 10 10" />
+                    <Path Stroke="Purple" Data="M 0 10 l 10 -10" />
+                </Canvas>
+            </VisualBrush.Visual>
+        </VisualBrush>
+    </Window.Resources>
     <Grid Name="Gridx" VerticalAlignment="Top">
         <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=CreateCanvas}" Width="{Binding ActualWidth, ElementName=CreateCanvas}" VerticalAlignment="Top">
             <Canvas x:Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>

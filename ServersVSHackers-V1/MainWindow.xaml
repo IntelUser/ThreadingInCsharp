@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:properties="clr-namespace:ServersVSHackers_V1.Properties"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="900" Width="1650">
     <Grid>
 
         <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="299" Width="189">
@@ -23,7 +23,8 @@
 
                     </Grid>
                 </GroupBox>
-                
+                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="10,201,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
+
 
 
             </Grid>
@@ -31,7 +32,11 @@
 
         </GroupBox>
 
+        <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=WorldCanvas}" Width="{Binding ActualWidth, ElementName=WorldCanvas}" VerticalAlignment="Top" HorizontalAlignment="Right">
+            
+            <Canvas x:Name="WorldCanvas" HorizontalAlignment="Right" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
 
+        </Border>
 
 
     </Grid>
