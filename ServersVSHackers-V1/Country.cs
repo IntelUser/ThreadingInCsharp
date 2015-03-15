@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    /**
-     * Testcomment for commit
-     * 
-     */
-
+    
     public enum Country
     {
         Z0rG = 1,
