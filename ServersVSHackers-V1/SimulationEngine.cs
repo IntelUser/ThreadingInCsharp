@@ -122,7 +122,7 @@ namespace ServersVSHackers_V1
                 IEntity attacker;
                 IEntity defender;
                 
-                DoubleAnimation lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(1000));
+                DoubleAnimation lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(500));
 
                     bool succesAttacker = ActiveHackers.TryTake(out attacker);
                     bool succesDefender = ActiveServers.TryTake(out defender);

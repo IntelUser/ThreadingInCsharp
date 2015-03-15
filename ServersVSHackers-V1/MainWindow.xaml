@@ -5,7 +5,7 @@
         Title="MainWindow" Height="900" Width="1650">
     <Grid>
 
-        <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="434" Width="189">
+        <GroupBox Header="Settings" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Height="467" Width="189">
             <Grid>
                 <GroupBox Header="Balance" Margin="0,19,0,10">
                     <Grid >
@@ -14,22 +14,26 @@
                         <Label Content="Servers" HorizontalAlignment="Left" Margin="117,55,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,10,0,0" TextWrapping="Wrap" Text="{Binding ElementName=EntitySlider,Path=Value}" VerticalAlignment="Top" Width="18" IsReadOnly="True"/>
 
-                        <Slider HorizontalAlignment="Center" Margin="10,133,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="TotalEntitiesSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=numberOfEntities}" Maximum="100000" Minimum="1000" TickFrequency="1000" />
+                        <Slider HorizontalAlignment="Center" Margin="10,133,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="TotalEntitiesSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=numberOfEntities}" Maximum="100000" Minimum="1000" TickFrequency="1000"/>
                         <Label Content="Entities" HorizontalAlignment="Left" Margin="0,160,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,102,0,0" TextWrapping="NoWrap"  Text="{Binding ElementName=TotalEntitiesSlider,Path=Value}" VerticalAlignment="Top" Width="73" IsReadOnly="True"/>
 
                     </Grid>
                 </GroupBox>
-                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Height="74" Width="177">
+                <GroupBox Header="Game" HorizontalAlignment="Left" Margin="0,228,0,0" VerticalAlignment="Top" Height="100" Width="177">
                     <Grid>
                         <Button Content="Start" HorizontalAlignment="Left" Margin="0,10,0,0" VerticalAlignment="Top" Width="45" Name="StartButton" Click="StartButton_Click"/>
                         <Button Content="Pause" HorizontalAlignment="Left" Margin="59,10,0,0" VerticalAlignment="Top" Width="45" Name="PauseButton"/>
                         <Button Content="Exit" HorizontalAlignment="Left" Margin="120,10,0,0" VerticalAlignment="Top" Width="45" Name="ExitButton"/>
+                        <Button x:Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="29,46,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
 
                     </Grid>
                 </GroupBox>
-                <Button Name="LevelDesignerButton" Content="Level Designer" HorizontalAlignment="Left" Margin="31,316,0,0" VerticalAlignment="Top" Width="108" Click="LevelDesignerButton_Click"/>
+                <TextBox Name="IntervalTextBox" HorizontalAlignment="Left" Height="23" Margin="70,340,0,0" TextWrapping="NoWrap"  Text="{Binding ElementName=IntervalSlider,Path=Value}" VerticalAlignment="Top" Width="73" IsReadOnly="True"/>
 
+                <Slider HorizontalAlignment="Center" Margin="10,373,22,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="IntervalSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=interval}" Maximum="750" Minimum="1" TickFrequency="1" ValueChanged="IntervalSlider_ValueChanged" />
+
+                <Label Content="Interval (in ms)" HorizontalAlignment="Left" Margin="0,395,0,0" VerticalAlignment="Top"/>
 
 
             </Grid>
@@ -46,11 +50,11 @@
         <Label Name="ServerAmountLabel" Content="Number of servers remaining" HorizontalAlignment="Left" Margin="525,782,0,0" VerticalAlignment="Top"/>
         <TextBlock Name="HackerAmountTextBlock" HorizontalAlignment="Left" Margin="323,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FFFF0011"/>
         <TextBlock Name="ServerAmountTextBlock" HorizontalAlignment="Left" Margin="596,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FF1D00FF"/>
-        <GroupBox Header="Status" HorizontalAlignment="Left" Margin="10,743,0,0" VerticalAlignment="Top" Height="65" Width="189">
+        <GroupBox Header="Status" HorizontalAlignment="Left" Margin="10,786,0,0" VerticalAlignment="Top" Height="65" Width="189">
             <TextBlock Name="StatusTextBlock" HorizontalAlignment="Left" Margin="10,10,0,0" TextWrapping="Wrap" Text="Ready..." VerticalAlignment="Top" Background="#FF00FF4C"/>
         </GroupBox>
-        <GroupBox Header="Logs" HorizontalAlignment="Left" Margin="10,467,0,0" VerticalAlignment="Top" Height="256" Width="189">
-            <RichTextBox FontFamily="Courier" x:Name="LogTextBox" HorizontalAlignment="Left" Height="222" Margin="0,10,-2,0" VerticalAlignment="Top" Width="179">
+        <GroupBox Header="Logs" HorizontalAlignment="Left" Margin="10,494,0,0" VerticalAlignment="Top" Height="287" Width="189">
+            <RichTextBox FontFamily="Courier" x:Name="LogTextBox" HorizontalAlignment="Left" Height="252" Margin="0,10,-2,0" VerticalAlignment="Top" Width="179">
                 <FlowDocument>
                     <Paragraph>
                         <Run Text=""/>

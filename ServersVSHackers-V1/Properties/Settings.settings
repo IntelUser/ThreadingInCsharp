@@ -8,5 +8,8 @@
     <Setting Name="balanceValue" Type="System.Double" Scope="User">
       <Value Profile="(Default)">7</Value>
     </Setting>
+    <Setting Name="interval" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">10</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

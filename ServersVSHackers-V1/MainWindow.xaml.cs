@@ -15,6 +15,7 @@ using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Nest;
 
 namespace ServersVSHackers_V1
 {
@@ -27,6 +28,8 @@ namespace ServersVSHackers_V1
         readonly System.Windows.Threading.DispatcherTimer _threadTwo = new System.Windows.Threading.DispatcherTimer();
         readonly System.Windows.Threading.DispatcherTimer _threadThree = new System.Windows.Threading.DispatcherTimer();
         private int threadCounter = 0;
+        //default interval is 1ms
+        private TimeSpan interval = new TimeSpan(0, 0, 0, 0, 10);
         public SimulationEngine engine;
         public MainWindow()
         {
@@ -34,6 +37,7 @@ namespace ServersVSHackers_V1
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = ib;
+            
         
         }
 
@@ -101,7 +105,7 @@ namespace ServersVSHackers_V1
         private void AttackButton_Click(object sender, RoutedEventArgs e)
         {            
             _threadOne.Tick += ThreadOneTick;
-            _threadOne.Interval = new TimeSpan(0, 0, 0, 0, 300);
+            _threadOne.Interval = interval;
             _threadOne.Start();
             threadCounter++;
             AttackButton.IsEnabled = false;
@@ -144,13 +148,13 @@ namespace ServersVSHackers_V1
             if (threadCounter.Equals(1))
             {
                 _threadTwo.Tick += ThreadTwoTick;
-                _threadTwo.Interval = new TimeSpan(0, 0, 0, 0, 200);
+                _threadTwo.Interval = interval;
                 _threadTwo.Start();
             }
             else if (threadCounter.Equals(2))
             {
                 _threadThree.Tick += ThreadThreeTick;
-                _threadThree.Interval = new TimeSpan(0, 0, 0, 0, 400);
+                _threadThree.Interval = interval;
                 _threadThree.Start();
             }
             else
@@ -180,6 +184,13 @@ namespace ServersVSHackers_V1
             _threadThree.Stop();
             MessageBox.Show("Servers WIN!! They didn't lose €" + c.ToString());
 
+        }
+
+       
+
+        private void IntervalSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.interval);
         }
     }
 }
