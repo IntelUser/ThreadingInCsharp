@@ -3,13 +3,17 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="LevelDesigner" Height="900
         " Width="1400" MouseLeftButtonDown="Window_MouseLeftButtonDown">
-    <Grid Name="Gridx">
-        <Canvas Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="10,10,0,0" VerticalAlignment="Top" Width="1372">
-            <TextBox Name="CountryTextBox" Height="22" Canvas.Left="706" TextWrapping="Wrap" Text="CountryName" Canvas.Top="826" Width="120" PreviewKeyDown="CountryTextBox_PreviewKeyDown" />
-        </Canvas>
-        <Button Name="NewCountryButton" Content="New Country" HorizontalAlignment="Left" Margin="40,836,0,0" VerticalAlignment="Top" Width="74" Click="NewCountryButton_Click"/>
-        <Button Name="SaveCountryButton" Content="Save Country" HorizontalAlignment="Left" Margin="140,836,0,0" VerticalAlignment="Top" Width="75" Click="SaveCountryButton_Click"/>
-        <Label Content="Click on coordinates to make a polygon shape. Use your common sense!" HorizontalAlignment="Left" Margin="269,836,0,0" VerticalAlignment="Top"/>
+    <Grid Name="Gridx" VerticalAlignment="Top">
+        <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=CreateCanvas}" Width="{Binding ActualWidth, ElementName=CreateCanvas}" VerticalAlignment="Top">
+            <Canvas x:Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
+        </Border>
+        <TextBox Name="CountryTextBox" Height="22" Margin="10,834,1262,14" TextWrapping="Wrap" Text="CountryName" Width="120" PreviewKeyDown="CountryTextBox_PreviewKeyDown" />
+        <Button Name="SaveCountryButton" Content="Save Country" HorizontalAlignment="Left" Margin="144,834,0,0" VerticalAlignment="Top" Width="76" Click="SaveCountryButton_Click"/>
+        <Label Content="Click on coordinates to make a polygon shape. Use your common sense!" HorizontalAlignment="Left" Margin="244,798,0,0" VerticalAlignment="Top"/>
+        <Button Name="ResetButton" Content="Reset" HorizontalAlignment="Left" Margin="145,802,0,0" VerticalAlignment="Top" Width="75" Click="ResetButton_Click"/>
+        <Label Content="Countries must not overlap! Limit is 5! Click reset to start over." HorizontalAlignment="Left" Margin="244,830,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.539,-0.192"/>
+        <Button Name="DeleteLastButton" Content="Delete last" HorizontalAlignment="Left" Margin="745,834,0,0" VerticalAlignment="Top" Width="75" Click="DeleteLastButton_Click"/>
+        <Button Name="SaveWorldButton" Content="Save World" HorizontalAlignment="Left" Margin="745,802,0,0" VerticalAlignment="Top" Width="75" Click="SaveWorldButton_Click"/>
 
     </Grid>
 </Window>
