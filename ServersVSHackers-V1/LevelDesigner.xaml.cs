@@ -41,7 +41,7 @@ namespace ServersVSHackers_V1
             polygon.Points = pc;
             polygon.Stroke = new SolidColorBrush(Colors.Green);
 
-            polygon.Fill = (VisualBrush)this.Resources["HatchBrush"];
+            polygon.Fill = Brushes.LightGreen;
 
             var xMin = pc.Min(p => p.X);
             var yMin = pc.Min(p => p.Y);

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    interface IEntity
+    public interface IEntity
     {
         /// <summary>
         /// Call action to engage all characters action.
@@ -26,6 +26,10 @@ namespace ServersVSHackers_V1
         void UpdateCashAmount(int amount);
 
         void SetDead();
+
+        Country C{ get; set; }
+
+        SimulationEngine.ValidPoint Coordinate {get; set;}
 
     }
 }

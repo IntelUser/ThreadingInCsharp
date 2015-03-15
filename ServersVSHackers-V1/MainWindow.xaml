@@ -14,7 +14,7 @@
                         <Label Content="Servers" HorizontalAlignment="Left" Margin="117,55,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,10,0,0" TextWrapping="Wrap" Text="{Binding ElementName=EntitySlider,Path=Value}" VerticalAlignment="Top" Width="18" IsReadOnly="True"/>
 
-                        <Slider HorizontalAlignment="Center" Margin="10,133,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="TotalEntitiesSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=numberOfEntities}" Maximum="1000000" Minimum="10000" TickFrequency="10000" />
+                        <Slider HorizontalAlignment="Center" Margin="10,133,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="TotalEntitiesSlider" Value="{Binding Source={x:Static properties:Settings.Default}, Path=numberOfEntities}" Maximum="100000" Minimum="1000" TickFrequency="1000" />
                         <Label Content="Entities" HorizontalAlignment="Left" Margin="0,160,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,102,0,0" TextWrapping="NoWrap"  Text="{Binding ElementName=TotalEntitiesSlider,Path=Value}" VerticalAlignment="Top" Width="73" IsReadOnly="True"/>
 
@@ -49,6 +49,10 @@
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
+        <Label Name="HackerAmountLabel" Content="Number of hackers remaining" HorizontalAlignment="Left" Height="30" Margin="255,782,0,0" VerticalAlignment="Top" Width="178"/>
+        <Label Name="ServerAmountLabel" Content="Number of servers remaining" HorizontalAlignment="Left" Margin="525,782,0,0" VerticalAlignment="Top"/>
+        <TextBlock Name="HackerAmountTextBlock" HorizontalAlignment="Left" Margin="323,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FFFF0011"/>
+        <TextBlock Name="ServerAmountTextBlock" HorizontalAlignment="Left" Margin="596,813,0,0" TextWrapping="Wrap" Text="0" VerticalAlignment="Top" FontFamily="Orator Std" FontSize="36" Foreground="#FF1D00FF"/>
 
 
 

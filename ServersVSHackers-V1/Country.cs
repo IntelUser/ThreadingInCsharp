@@ -6,15 +6,31 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    class Country
+    public class Country
     {
-        string Name { get; set; }
-        private List<SimulationEngine.ValidPoint> validPoints;
-        
+        public string Name { get; set; }
+
+        public List<SimulationEngine.ValidPoint> validPoints;
+        Random rnd = new Random();
+
         public Country(string name, List<SimulationEngine.ValidPoint> list)
         {
             Name = name;
             validPoints = list;
+        }
+
+        public SimulationEngine.ValidPoint GetValidPoint()
+        {
+            SimulationEngine.ValidPoint coordinate;
+            while (true)
+            {
+                coordinate = validPoints[rnd.Next(validPoints.Count)];
+                if (!coordinate.Used)
+                {                    
+                    coordinate.Used = true;
+                    return coordinate;
+                }
+            }
         }
 
     }

@@ -13,6 +13,9 @@ namespace ServersVSHackers_V1
         private int _skillLevel, _cash;
         public int Cash { get { return _cash; } }
         public int SkillLevel { get { return _skillLevel; } }
+        private SimulationEngine.ValidPoint coordinate;
+
+        public Country Country { get; set; }
         
         public Hacker(int id, int skillLevel)
         {
@@ -50,6 +53,19 @@ namespace ServersVSHackers_V1
         public void SetDead()
         {
             _isAlive = false;
+        }
+
+        public Country C
+        {
+            get { return Country; }
+            set { Country = value; }
+
+        }
+
+        public SimulationEngine.ValidPoint Coordinate
+        {
+            get { return coordinate; }
+            set { coordinate = value; }
         }
     }
 }
