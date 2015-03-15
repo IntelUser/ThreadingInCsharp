@@ -3,31 +3,31 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Ink;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
-using TestWW3.Properties;
-using System.Drawing;
 
-namespace TestWW3
+namespace ServersVSHackers_V1
 {
     /// <summary>
-    ///     Interaction logic for MainWindow.xaml
+    /// Interaction logic for TestWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class TestWindow : Window
     {
         public List<ValidPoint> points = new List<ValidPoint>();
         public Polygon ACountry = new Polygon();
 
-        public MainWindow()
+        public TestWindow()
         {
             InitializeComponent();
 
@@ -43,8 +43,8 @@ namespace TestWW3
 
 
             //hacker code
-            int _numberOfHackers = (_numberOfEntities*_balance)/10;
-            int _numberOfServers = (_numberOfEntities*(10 - _balance))/10;
+            int _numberOfHackers = (_numberOfEntities * _balance) / 10;
+            int _numberOfServers = (_numberOfEntities * (10 - _balance)) / 10;
             // balance = 1 (limit) is 10% hackers, 90% servers
             // balance = 9 (limit) is 90% hackers, 10% servers
 
@@ -52,10 +52,10 @@ namespace TestWW3
             Stopwatch t = new Stopwatch();
             t.Start();
 
-            Parallel.For(0, _numberOfServers, i => cbEntities.Add(new Server()));
+            Parallel.For(0, _numberOfServers, i => cbEntities.Add(new Server(10,10,new Country())));
 
 
-            Parallel.For(0, _numberOfHackers, i => cbEntities.Add(new Hacker()));
+            Parallel.For(0, _numberOfHackers, i => cbEntities.Add(new Hacker(10,10)));
 
             t.Stop();
 
@@ -71,24 +71,24 @@ namespace TestWW3
             ACountry.Fill = new SolidColorBrush(Colors.Yellow);
             Canvasx.Children.Add(ACountry);
             #endregion
-           
+
             #region TestLine
 
             List<Line> lll = new List<Line>();
             Random X = new Random(1000);
             for (int i = 0; i < 25; i++)
             {
-                
+
                 Line l = new Line();
                 l.X1 = l.Y1 = X.Next(440);
-                l.X2 = l.Y2 = X.Next(440); 
+                l.X2 = l.Y2 = X.Next(440);
                 l.Stroke = Brushes.Orange;
                 l.StrokeThickness = 6;
                 lll.Add(l);
             }
-            
+
             DoubleAnimation lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(1000));
-          
+
 
             #endregion
 
@@ -100,7 +100,7 @@ namespace TestWW3
                 {
                     if (IsPointInPolygon(ps, new Point(x, y)))
                     {
-                        points.Add(new ValidPoint() {x = x, y = y});
+                        points.Add(new ValidPoint() { x = x, y = y });
                     }
 
                 }
@@ -109,7 +109,7 @@ namespace TestWW3
             Console.WriteLine("Number of Entities: {0}, ms elapsed = {1}", cbEntities.Count, t.ElapsedMilliseconds);
             Console.WriteLine("Amount of points: " + points.Count());
             this.Show();
-            for (int i = 0; i < points.Count-10; i += 5)
+            for (int i = 0; i < points.Count - 10; i += 5)
             {
                 points.RemoveAt(i);
             }
@@ -119,13 +119,13 @@ namespace TestWW3
             Thread test = new Thread(Start);
             //test.Start();
 
-         
-            
 
 
-            
+
+
+
         }
-        
+
         private void Start()
         {
             int counter = 0;

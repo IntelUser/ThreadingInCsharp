@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    class Server : ICharacter
+    class Server : IEntity
     {
         private bool _isAlive;
         private int _cash, _protectionLevel;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    interface ICharacter
+    interface IEntity
     {
         /// <summary>
         /// Call action to engage all characters action.
