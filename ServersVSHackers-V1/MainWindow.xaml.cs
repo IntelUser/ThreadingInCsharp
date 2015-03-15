@@ -24,6 +24,8 @@ namespace ServersVSHackers_V1
         public MainWindow()
         {
             InitializeComponent();
+            LevelDesigner ldDesigner = new LevelDesigner();
+            ldDesigner.Show();
         }
 
         private void EntitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

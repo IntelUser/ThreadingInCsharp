@@ -69,11 +69,18 @@
     <Compile Include="Database\IDatabaseController.cs" />
     <Compile Include="ExtensionMethods.cs" />
     <Compile Include="Generator.cs" />
+    <Compile Include="LevelDesigner.xaml.cs">
+      <DependentUpon>LevelDesigner.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Server.cs" />
     <Compile Include="SimulationEngine.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
+    <Page Include="LevelDesigner.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
