@@ -3,71 +3,38 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Schema;
 
 namespace ServersVSHackers_V1
 {
     class Hacker : IEntity
     {
-        private readonly int _id;
-        private bool _isAlive;
-        private int _skillLevel, _cash;
-        public int Cash { get { return _cash; }
-           set { }
-        }
-        public int SkillLevel { get { return _skillLevel; } }
-        private SimulationEngine.ValidPoint coordinate;
+        public int Id { get; private set; }
+        public bool IsAlive { get; set; }
+        public int Cash {get; set; }
+        public int SkillLevel { get; private set; }
+
 
         public Country Country { get; set; }
-        
+        public SimulationEngine.ValidPoint Coordinate { get; set; }
         public Hacker(int id, int skillLevel)
         {
-            _id = id;
-            _skillLevel = skillLevel;
-            _cash = 0;
-            _isAlive = true;
+            Id = id;
+            SkillLevel = skillLevel;
+            Cash = 0;
+            IsAlive = true;
         }
-
-
-        public void Action()
+        public void StealCash(Server server)
         {
-            throw new NotImplementedException();
+            this.Cash += server.Cash;
         }
-
-        public bool IsAlive()
-        {
-            return _isAlive;
-        }
-    
-
-        public void UpdateCashAmount(int amount)
-        {
-            _cash += amount;
-        }
-
+   
         public void IncreaseSkillLevel()
         {
-            if(_skillLevel <= 9)
+            if(SkillLevel <= 9)
             {
-                _skillLevel++;
+                SkillLevel++;
             }
-        }
-
-        public void SetDead()
-        {
-            _isAlive = false;
-        }
-
-        public Country C
-        {
-            get { return Country; }
-            set { Country = value; }
-
-        }
-
-        public SimulationEngine.ValidPoint Coordinate
-        {
-            get { return coordinate; }
-            set { coordinate = value; }
         }
     }
 }

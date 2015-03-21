@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -95,11 +96,11 @@ namespace ServersVSHackers_V1
             GenerateCountries();
             AssignCountries();
             //dit duurt extreem lang...
-            var AssignCoordinatesThread = new Thread(AssignCoordinates);
-            AssignCoordinatesThread.Start();
+            var assignCoordinatesThread = new Thread(AssignCoordinates);
+            assignCoordinatesThread.Start();
             //dit waarschijnlijk nog veel langer
-            var PlaceEntitiesOnWorldThread = new Thread(PlaceEntitiesOnWorld);
-            PlaceEntitiesOnWorldThread.Start();
+            var placeEntitiesOnWorldThread = new Thread(PlaceEntitiesOnWorld);
+            placeEntitiesOnWorldThread.Start();
 
             //Thread startAttacksThread = new Thread(StartAttacks);
             //startAttacksThread.Start(); 
@@ -118,23 +119,26 @@ namespace ServersVSHackers_V1
                 
                 var lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(500));
 
-                    var succesAttacker = ActiveHackers.TryTake(out attacker);
-                    var succesDefender = ActiveServers.TryTake(out defender);
+                var succesAttacker = ActiveHackers.TryTake(out attacker);
+                var succesDefender = ActiveServers.TryTake(out defender);
+
                 if (!succesDefender || !succesAttacker)
                 {
                     if (ActiveHackers.IsEmpty)
                     {
                         //DoSomething
-                        var c = (from IEntity in ActiveServers select IEntity.Cash).Sum();
+                        var totalServerCash = (from entity in ActiveServers select entity.Cash).Sum();
 
-                        _mainWindow.ServersWin(c);
+                        _mainWindow.ServersWin(totalServerCash);
+                        return;
                     }
                     else if (ActiveServers.IsEmpty)
                     {
                         //DoSomethingElse
-                        var c = (from IEntity in ActiveHackers select IEntity.Cash).Sum();
+                        var totalHackerCash = (from entity in ActiveHackers select entity.Cash).Sum();
                         
-                        _mainWindow.HackersWin(c);
+                        _mainWindow.HackersWin(totalHackerCash);
+                        return;
                     }
                     else
                     {
@@ -147,130 +151,30 @@ namespace ServersVSHackers_V1
                     #region attack
                     if (succesAttacker && succesDefender)
                     {
-                        Hacker hacker = (Hacker)attacker;
-                        Server server = (Server)defender;
-                        List<UIElement> itemstoremove = new List<UIElement>();
-                        if (hacker.SkillLevel > server.ProtectionLevel)
-                        {
-                            //server dood
-                            string toDelete =
-                                    String.Format(server.Coordinate.X.ToString() + server.Coordinate.Y.ToString());
-                            HackedServers.Add(server);                            
-                            hacker.UpdateCashAmount(server.Cash);
-                            ActiveHackers.Add(hacker);
-                            NumberOfServers--;
-                            
-                            _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString();
-                            _mainWindow.Log(String.Format("Hacker {0} from {1} won! He gained {2} in cash! Server is dead...", hacker.SkillLevel, hacker.C.Name, server.Cash));
-                            //remove server dot
-                            foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
-                            {
-                                if (
-                                    ui.Uid.Equals(toDelete))
-                                {
-                                    itemstoremove.Add(ui);
-                                }
-                            }
-                            foreach (UIElement ui in itemstoremove)
-                            {
-                                _mainWindow.WorldCanvas.Children.Remove(ui);
-                            }                        
-                        }
-                        else if (hacker.SkillLevel < server.ProtectionLevel)
-                        {
-                            //hacker dood
-                            string toDelete =
-                                    String.Format(hacker.Coordinate.X.ToString() + hacker.Coordinate.Y.ToString());
-                            hacker.SetDead();
-                            BustedHackers.Add(hacker);
-                            ActiveServers.Add(server);
-                            NumberOfHackers--;
-                            
-                            
-                            _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
-                            _mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
-                            //remove hacker dot
-                            foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
-                            {
-                                if (ui.Uid.Equals(toDelete))
-                                    
-                                {
-                                    itemstoremove.Add(ui);
-                                }
-                            }
-                            foreach (UIElement ui in itemstoremove)
-                            {
-                                _mainWindow.WorldCanvas.Children.Remove(ui);
-                            }
-                        }
-                        else if (hacker.SkillLevel == server.ProtectionLevel)
-                        {
-                            //we are EVEN! faith decides who wins...
-                            int faith = Generator.GetRandomNumber(0,10);
-                            if (faith < 5)
-                            {
-                                //server dood
-                                //hoop dubbele code
-                                //TODO
-                                string toDelete =
-                                    String.Format(server.Coordinate.X.ToString() + server.Coordinate.Y.ToString());
-                                HackedServers.Add(server);
-                                hacker.UpdateCashAmount(server.Cash);
-                                ActiveHackers.Add(hacker);
-                                NumberOfServers--;
-                                _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString();
-                                _mainWindow.Log(
-                                String.Format("Hacker {0} from {1} won! He gained {2} in cash! Server is dead...",
-                                        hacker.SkillLevel, hacker.C.Name, server.Cash));
-
-                                
-                                foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
-                                {
-                                    if (ui.Uid.Equals(toDelete))
-                                    {
-                                        itemstoremove.Add(ui);
-                                    }
-                                }
-                                foreach (UIElement ui in itemstoremove)
-                                {
-                                    _mainWindow.WorldCanvas.Children.Remove(ui);
-                                }
-                            }
-                            else
-                            {
-                                //hacker dood
-                                //hoop dubbele code
-                                //TODO
-                                string toDelete =
-                                    String.Format(hacker.Coordinate.X.ToString() + hacker.Coordinate.Y.ToString());
-                                hacker.SetDead();
-                                BustedHackers.Add(hacker);
-                                ActiveServers.Add(server);
-                                NumberOfHackers--;
-                                _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
-                                _mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
-                                //remove hacker dot
-                                
-                                
-                                
-                                foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
-                                {
-                                    if (ui.Uid.Equals(toDelete))
-                                    {
-                                        itemstoremove.Add(ui);
-                                    }
-                                }
-                                foreach (UIElement ui in itemstoremove)
-                                {
-                                    _mainWindow.WorldCanvas.Children.Remove(ui);
-                                }                            
-                            }
-
-
-                        }
+                        var hacker = (Hacker)attacker;
+                        var server = (Server)defender;
                         
+
+                        var winner = DecideWinner(hacker, server);
+                        SetWinner(winner);
+
+                        _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString(); // redraw number of servers
+                        _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString(); // redraw number of hackers
+
+                        // hacker wins
+                        if (winner.GetType() == typeof (Hacker))
+                        {
+                            hacker.StealCash(server);
+                            RemoveUiElement(server.Coordinate);
+                        }
+                        else
+                        {
+                            RemoveUiElement(hacker.Coordinate);
+                        }
+                       
                     #endregion
                     }
+
                     var line = new Line
                     {
                         //starting point
@@ -287,6 +191,55 @@ namespace ServersVSHackers_V1
 
             }));
 
+        }
+
+        /// <summary>
+        /// Decide which entity is the winner.
+        /// </summary>
+        /// <param name="hacker"></param>
+        /// <param name="server"></param>
+        /// <returns>The entity of the winner</returns>
+        private static IEntity DecideWinner (Hacker hacker, Server server)
+        {
+            if (hacker.SkillLevel > server.ProtectionLevel)
+            {
+               
+                return hacker;
+            }
+            if (hacker.SkillLevel.Equals(server.ProtectionLevel))
+            {
+                if(Generator.GetRandomNumber(0, 10) < 5)
+                {
+                    return server;
+                }
+                return hacker;
+            }
+            return server;
+        }
+
+        private void SetWinner(IEntity entity)
+        {
+            if (entity.GetType() == typeof (Hacker))
+            {
+                HackedServers.Add(entity);      // add server to hackedlist  
+                ActiveHackers.Add(entity);      // put the hacker back in the list
+                NumberOfServers--;              // decrease number of servers
+            }
+            else if (entity.GetType() == typeof (Server))
+            {
+                BustedHackers.Add(entity);          // add hacker to bustlist
+                ActiveServers.Add(entity);          // put the server back in the list
+                NumberOfHackers--;                  // decrease hackers
+            }
+        }
+
+        private void RemoveUiElement(ValidPoint point)
+        {
+            foreach (var element in _mainWindow.WorldCanvas.Children.Cast<UIElement>().Where(ui => ui.Uid.Equals(String.Format("{0}{1}", point.X, point.Y))).ToList())
+            {
+                _mainWindow.WorldCanvas.Children.Remove(element);
+            }
+                
         }
 
         private void GenerateCountries()
@@ -312,12 +265,12 @@ namespace ServersVSHackers_V1
             var rnd = new Random();
             Parallel.ForEach(ActiveHackers, currentHacker =>
             {
-                currentHacker.C = _countryList[rnd.Next(_countryList.Count)];
+                currentHacker.Country = _countryList[rnd.Next(_countryList.Count)];
             });
             
             Parallel.ForEach(ActiveServers, currentServer =>
             {
-                currentServer.C = _countryList[rnd.Next(_countryList.Count)];
+                currentServer.Country = _countryList[rnd.Next(_countryList.Count)];
             });
         }
 
@@ -328,13 +281,13 @@ namespace ServersVSHackers_V1
             foreach (var hacker in ActiveHackers)
             {
                 
-                hacker.Coordinate = hacker.C.GetValidPoint();
+                hacker.Coordinate = hacker.Country.GetValidPoint();
                 Console.WriteLine("hacker x= {0}, y= {1}", hacker.Coordinate.X, hacker.Coordinate.Y);
             }
             foreach (var server in ActiveServers)
             {
 
-                server.Coordinate = server.C.GetValidPoint();
+                server.Coordinate = server.Country.GetValidPoint();
                 Console.WriteLine("server x= {0}, y= {1}", server.Coordinate.X, server.Coordinate.Y);
             }
             _syncEvent.Set();
