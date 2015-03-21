@@ -23,19 +23,20 @@ namespace ServersVSHackers_V1
 {
     public class SimulationEngine
     {
-        ManualResetEvent syncEvent = new ManualResetEvent(false);
-        public int _numberOfHackers, _numberOfServers;
+        private readonly ManualResetEvent _syncEvent = new ManualResetEvent(false);
+        private readonly List<Country> _countryList = new List<Country>();
+        private readonly IDatabaseController _dbController;
+        private readonly MainWindow _mainWindow;
+        private const string ATTACK_LOG_TABLE = "attack_logs";
+
+        public int NumberOfHackers, NumberOfServers;
         public ConcurrentBag<IEntity> ActiveHackers, BustedHackers;
         public ConcurrentBag<IEntity> ActiveServers, HackedServers;
-        List<Country> CountryList = new List<Country>(); 
+        
 
-        private readonly IDatabaseController _dbController;
-        //private Boolean is
-        private const string ATTACK_LOG_TABLE = "attack_logs";
-        private MainWindow mainWindow;
         public SimulationEngine(MainWindow window)
         {
-            mainWindow = window;
+            _mainWindow = window;
             // connect to local elastic database
             var node = new Uri("http://localhost:9200");
             var settings = new ConnectionSettings(node, defaultIndex: ATTACK_LOG_TABLE);
@@ -52,15 +53,8 @@ namespace ServersVSHackers_V1
         {
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                mainWindow.StatusTextBlock.Text = text;
-                if (brush == null)
-            {
-                mainWindow.StatusTextBlock.Background = Brushes.Green;
-            }
-            else
-            {
-                mainWindow.StatusTextBlock.Background = brush;
-            }
+                _mainWindow.StatusTextBlock.Text = text;
+                _mainWindow.StatusTextBlock.Background = brush ?? Brushes.Green;
             }));
             
         }
@@ -68,43 +62,43 @@ namespace ServersVSHackers_V1
         {
             SetStatus("Generating entities", Brushes.Red);
             //one MILLION entities
-            int _numberOfEntities = Convert.ToInt32(Properties.Settings.Default.numberOfEntities);
+            var numberOfEntities = Convert.ToInt32(Properties.Settings.Default.numberOfEntities);
             // balance = 1 (limit) is 10% hackers, 90% servers
             // balance = 9 (limit) is 90% hackers, 10% servers
             //value of Slider
-            int _balance = Convert.ToInt32(Properties.Settings.Default.balanceValue);
+            var balance = Convert.ToInt32(Properties.Settings.Default.balanceValue);
 
 
             //hacker code
-            _numberOfHackers = (_numberOfEntities * _balance) / 10;
-            _numberOfServers = (_numberOfEntities * (10 - _balance)) / 10;
+            NumberOfHackers = (numberOfEntities * balance) / 10;
+            NumberOfServers = (numberOfEntities * (10 - balance)) / 10;
             // balance = 1 (limit) is 10% hackers, 90% servers
             // balance = 9 (limit) is 90% hackers, 10% servers
 
             //generation code
-            mainWindow.Log(String.Format("Hackers created: {0}, servers created: {1}", _numberOfHackers, _numberOfServers) );
-            mainWindow.ServerAmountTextBlock.Text = _numberOfServers.ToString();
-            mainWindow.HackerAmountTextBlock.Text = _numberOfHackers.ToString();
-            Stopwatch t = new Stopwatch();
-            t.Start();
-            Parallel.For(0, _numberOfServers, i => ActiveServers.Add(new Server(
+            _mainWindow.Log(String.Format("Hackers created: {0}, servers created: {1}", NumberOfHackers, NumberOfServers) );
+            _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString();
+            _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
+            var sw = new Stopwatch();
+            sw.Start();
+            Parallel.For(0, NumberOfServers, i => ActiveServers.Add(new Server(
                                                                                 Generator.GetRandomNumber(100, 10000),
                                                                                 Generator.GetRandomNumber(1, 10))));
 
 
-            Parallel.For(0, _numberOfHackers, i => ActiveHackers.Add(new Hacker(
+            Parallel.For(0, NumberOfHackers, i => ActiveHackers.Add(new Hacker(
                                                                                 Generator.GetRandomNumber(100, 10000),
                                                                                 Generator.GetRandomNumber(1, 10))));
 
-            t.Stop();
-            mainWindow.Log("Generation took: " + t.ElapsedMilliseconds);
+            sw.Stop();
+            _mainWindow.Log("Generation took: " + sw.ElapsedMilliseconds);
             GenerateCountries();
             AssignCountries();
             //dit duurt extreem lang...
-            Thread AssignCoordinatesThread = new Thread(AssignCoordinates);
+            var AssignCoordinatesThread = new Thread(AssignCoordinates);
             AssignCoordinatesThread.Start();
             //dit waarschijnlijk nog veel langer
-            Thread PlaceEntitiesOnWorldThread = new Thread(PlaceEntitiesOnWorld);
+            var PlaceEntitiesOnWorldThread = new Thread(PlaceEntitiesOnWorld);
             PlaceEntitiesOnWorldThread.Start();
 
             //Thread startAttacksThread = new Thread(StartAttacks);
@@ -122,25 +116,25 @@ namespace ServersVSHackers_V1
                 IEntity attacker;
                 IEntity defender;
                 
-                DoubleAnimation lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(500));
+                var lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(500));
 
-                    bool succesAttacker = ActiveHackers.TryTake(out attacker);
-                    bool succesDefender = ActiveServers.TryTake(out defender);
+                    var succesAttacker = ActiveHackers.TryTake(out attacker);
+                    var succesDefender = ActiveServers.TryTake(out defender);
                 if (!succesDefender || !succesAttacker)
                 {
                     if (ActiveHackers.IsEmpty)
                     {
                         //DoSomething
-                        int c = (from IEntity in ActiveServers select IEntity.Cash).Sum();
+                        var c = (from IEntity in ActiveServers select IEntity.Cash).Sum();
 
-                        mainWindow.ServersWin(c);
+                        _mainWindow.ServersWin(c);
                     }
                     else if (ActiveServers.IsEmpty)
                     {
                         //DoSomethingElse
-                        int c = (from IEntity in ActiveHackers select IEntity.Cash).Sum();
+                        var c = (from IEntity in ActiveHackers select IEntity.Cash).Sum();
                         
-                        mainWindow.HackersWin(c);
+                        _mainWindow.HackersWin(c);
                     }
                     else
                     {
@@ -164,12 +158,12 @@ namespace ServersVSHackers_V1
                             HackedServers.Add(server);                            
                             hacker.UpdateCashAmount(server.Cash);
                             ActiveHackers.Add(hacker);
-                            _numberOfServers--;
+                            NumberOfServers--;
                             
-                            mainWindow.ServerAmountTextBlock.Text = _numberOfServers.ToString();
-                            mainWindow.Log(String.Format("Hacker {0} from {1} won! He gained {2} in cash! Server is dead...", hacker.SkillLevel, hacker.C.Name, server.Cash));
+                            _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString();
+                            _mainWindow.Log(String.Format("Hacker {0} from {1} won! He gained {2} in cash! Server is dead...", hacker.SkillLevel, hacker.C.Name, server.Cash));
                             //remove server dot
-                            foreach (UIElement ui in mainWindow.WorldCanvas.Children)
+                            foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
                             {
                                 if (
                                     ui.Uid.Equals(toDelete))
@@ -179,7 +173,7 @@ namespace ServersVSHackers_V1
                             }
                             foreach (UIElement ui in itemstoremove)
                             {
-                                mainWindow.WorldCanvas.Children.Remove(ui);
+                                _mainWindow.WorldCanvas.Children.Remove(ui);
                             }                        
                         }
                         else if (hacker.SkillLevel < server.ProtectionLevel)
@@ -190,13 +184,13 @@ namespace ServersVSHackers_V1
                             hacker.SetDead();
                             BustedHackers.Add(hacker);
                             ActiveServers.Add(server);
-                            _numberOfHackers--;
+                            NumberOfHackers--;
                             
                             
-                            mainWindow.HackerAmountTextBlock.Text = _numberOfHackers.ToString();
-                            mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
+                            _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
+                            _mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
                             //remove hacker dot
-                            foreach (UIElement ui in mainWindow.WorldCanvas.Children)
+                            foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
                             {
                                 if (ui.Uid.Equals(toDelete))
                                     
@@ -206,7 +200,7 @@ namespace ServersVSHackers_V1
                             }
                             foreach (UIElement ui in itemstoremove)
                             {
-                                mainWindow.WorldCanvas.Children.Remove(ui);
+                                _mainWindow.WorldCanvas.Children.Remove(ui);
                             }
                         }
                         else if (hacker.SkillLevel == server.ProtectionLevel)
@@ -223,14 +217,14 @@ namespace ServersVSHackers_V1
                                 HackedServers.Add(server);
                                 hacker.UpdateCashAmount(server.Cash);
                                 ActiveHackers.Add(hacker);
-                                _numberOfServers--;
-                                mainWindow.ServerAmountTextBlock.Text = _numberOfServers.ToString();
-                                mainWindow.Log(
+                                NumberOfServers--;
+                                _mainWindow.ServerAmountTextBlock.Text = NumberOfServers.ToString();
+                                _mainWindow.Log(
                                 String.Format("Hacker {0} from {1} won! He gained {2} in cash! Server is dead...",
                                         hacker.SkillLevel, hacker.C.Name, server.Cash));
 
                                 
-                                foreach (UIElement ui in mainWindow.WorldCanvas.Children)
+                                foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
                                 {
                                     if (ui.Uid.Equals(toDelete))
                                     {
@@ -239,7 +233,7 @@ namespace ServersVSHackers_V1
                                 }
                                 foreach (UIElement ui in itemstoremove)
                                 {
-                                    mainWindow.WorldCanvas.Children.Remove(ui);
+                                    _mainWindow.WorldCanvas.Children.Remove(ui);
                                 }
                             }
                             else
@@ -252,14 +246,14 @@ namespace ServersVSHackers_V1
                                 hacker.SetDead();
                                 BustedHackers.Add(hacker);
                                 ActiveServers.Add(server);
-                                _numberOfHackers--;
-                                mainWindow.HackerAmountTextBlock.Text = _numberOfHackers.ToString();
-                                mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
+                                NumberOfHackers--;
+                                _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
+                                _mainWindow.Log(String.Format("Server {0} from {1} won! We must implement what he gained! Hacker is busted...", server.Coordinate.X, server.C.Name));
                                 //remove hacker dot
                                 
                                 
                                 
-                                foreach (UIElement ui in mainWindow.WorldCanvas.Children)
+                                foreach (UIElement ui in _mainWindow.WorldCanvas.Children)
                                 {
                                     if (ui.Uid.Equals(toDelete))
                                     {
@@ -268,7 +262,7 @@ namespace ServersVSHackers_V1
                                 }
                                 foreach (UIElement ui in itemstoremove)
                                 {
-                                    mainWindow.WorldCanvas.Children.Remove(ui);
+                                    _mainWindow.WorldCanvas.Children.Remove(ui);
                                 }                            
                             }
 
@@ -277,7 +271,7 @@ namespace ServersVSHackers_V1
                         
                     #endregion
                     }
-                    Line l = new Line
+                    var line = new Line
                     {
                         //starting point
                         X1 = attacker.Coordinate.X,
@@ -288,8 +282,8 @@ namespace ServersVSHackers_V1
                         Stroke = b,
                         StrokeThickness = 6
                     };
-                    mainWindow.WorldCanvas.Children.Add(l);
-                    l.BeginAnimation(UIElement.OpacityProperty, lineFade);              
+                    _mainWindow.WorldCanvas.Children.Add(line);
+                    line.BeginAnimation(UIElement.OpacityProperty, lineFade);              
 
             }));
 
@@ -301,12 +295,12 @@ namespace ServersVSHackers_V1
 
             foreach (var polygon in Environment.World)
             {
-                CountryList.Add(new Country(polygon.Name, DefinePixelsinCountries(polygon)));
+                _countryList.Add(new Country(polygon.Name, DefinePixelsinCountries(polygon)));
                 
             }
-            foreach (var c in CountryList)
+            foreach (var c in _countryList)
             {
-                mainWindow.Log(String.Format("Amount of valid points in {0} are: {1}.", c.Name, c.validPoints.Count));
+                _mainWindow.Log(String.Format("Amount of valid points in {0} are: {1}.", c.Name, c.validPoints.Count));
             }
         }
 
@@ -315,15 +309,15 @@ namespace ServersVSHackers_V1
             SetStatus("Assigning countries.", Brushes.Red);
 
             //ergens anders? : 
-            Random rnd = new Random();
+            var rnd = new Random();
             Parallel.ForEach(ActiveHackers, currentHacker =>
             {
-                currentHacker.C = CountryList[rnd.Next(CountryList.Count)];
+                currentHacker.C = _countryList[rnd.Next(_countryList.Count)];
             });
             
             Parallel.ForEach(ActiveServers, currentServer =>
             {
-                currentServer.C = CountryList[rnd.Next(CountryList.Count)];
+                currentServer.C = _countryList[rnd.Next(_countryList.Count)];
             });
         }
 
@@ -343,47 +337,48 @@ namespace ServersVSHackers_V1
                 server.Coordinate = server.C.GetValidPoint();
                 Console.WriteLine("server x= {0}, y= {1}", server.Coordinate.X, server.Coordinate.Y);
             }
-            syncEvent.Set();
+            _syncEvent.Set();
 
         }
 
         private void PlaceEntitiesOnWorld()
         {
 
-            syncEvent.WaitOne();
+            _syncEvent.WaitOne();
             Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 SetStatus("Placing entities.", Brushes.Red);
                 foreach (var hacker in ActiveHackers)
                 {
-                    
-                    Rectangle rect;
-                    rect = new Rectangle();
-                    rect.Uid = String.Format(hacker.Coordinate.X.ToString() + hacker.Coordinate.Y.ToString());
-                    rect.Stroke = new SolidColorBrush(Colors.Red);
-                    rect.Fill = new SolidColorBrush(Colors.Red);
-                    rect.Width = 2;
-                    rect.Height = 2;
+                    var rect = new Rectangle
+                    {
+                        Uid = String.Format(hacker.Coordinate.X + hacker.Coordinate.Y.ToString()),
+                        Stroke = new SolidColorBrush(Colors.Red),
+                        Fill = new SolidColorBrush(Colors.Red),
+                        Width = 2,
+                        Height = 2
+                    };
                     Canvas.SetLeft(rect, hacker.Coordinate.X);
                     Canvas.SetTop(rect, hacker.Coordinate.Y);
-                    mainWindow.WorldCanvas.Children.Add(rect);
+                    _mainWindow.WorldCanvas.Children.Add(rect);
                     //Canvasx.Refresh();
                     //tt.Stop();
                     //MessageBox.Show(tt.ElapsedTicks.ToString());
                 }
                 foreach (var server in ActiveServers)
                 {
+                    var rect = new Rectangle
+                    {
+                        Uid = String.Format(server.Coordinate.X + server.Coordinate.Y.ToString()),
+                        Stroke = new SolidColorBrush(Colors.Blue),
+                        Fill = new SolidColorBrush(Colors.Blue),
+                        Width = 2,
+                        Height = 2
+                    };
 
-                    Rectangle rect;
-                    rect = new Rectangle();
-                    rect.Uid = String.Format(server.Coordinate.X.ToString() + server.Coordinate.Y.ToString());                    
-                    rect.Stroke = new SolidColorBrush(Colors.Blue);
-                    rect.Fill = new SolidColorBrush(Colors.Blue);
-                    rect.Width = 2;
-                    rect.Height = 2;
                     Canvas.SetLeft(rect, server.Coordinate.X);
                     Canvas.SetTop(rect, server.Coordinate.Y);
-                    mainWindow.WorldCanvas.Children.Add(rect);
+                    _mainWindow.WorldCanvas.Children.Add(rect);
                     //Canvasx.Refresh();
                     //tt.Stop();
                     //MessageBox.Show(tt.ElapsedTicks.ToString());
@@ -395,14 +390,14 @@ namespace ServersVSHackers_V1
 
         public List<ValidPoint> DefinePixelsinCountries(Polygon poly)
         {
-            List<ValidPoint> points = new List<ValidPoint>();
+            var points = new List<ValidPoint>();
             
 
-            Point[] ps = poly.Points.ToArray();
+            var ps = poly.Points.ToArray();
 
-            for (double y = 0; y < mainWindow.WorldCanvas.Height; y++)
+            for (double y = 0; y < _mainWindow.WorldCanvas.Height; y++)
             {
-                for (double x = 0; x < mainWindow.WorldCanvas.Width; x++)
+                for (double x = 0; x < _mainWindow.WorldCanvas.Width; x++)
                 {
                     if (IsPointInPolygon(ps, new Point(x, y)))
                     {
@@ -414,9 +409,9 @@ namespace ServersVSHackers_V1
             return points;
         }
 
-        private bool IsPointInPolygon(Point[] polygon, Point point)
+        private static bool IsPointInPolygon(Point[] polygon, Point point)
         {
-            bool isInside = false;
+            var isInside = false;
             for (int i = 0, j = polygon.Length - 1; i < polygon.Length; j = i++)
             {
                 if (((polygon[i].Y > point.Y) != (polygon[j].Y > point.Y)) &&
