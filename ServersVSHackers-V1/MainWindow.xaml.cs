@@ -1,80 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using Nest;
 using ServersVSHackers_V1.Database;
+using ServersVSHackers_V1.Properties;
 
 namespace ServersVSHackers_V1
 {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    ///     Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
     {
-        readonly System.Windows.Threading.DispatcherTimer _threadOne = new System.Windows.Threading.DispatcherTimer();
-        readonly System.Windows.Threading.DispatcherTimer _threadTwo = new System.Windows.Threading.DispatcherTimer();
-        readonly System.Windows.Threading.DispatcherTimer _threadThree = new System.Windows.Threading.DispatcherTimer();
-        private int threadCounter = 0;
-        //default interval is 1ms
-        private TimeSpan interval = new TimeSpan(0, 0, 0, 0, 10);
-        public SimulationEngine engine;
         private readonly IDatabaseController _dbController;
+        private readonly DispatcherTimer _timerOne = new DispatcherTimer();
+        private readonly DispatcherTimer _timerTwo = new DispatcherTimer();
+        private readonly DispatcherTimer _timerThree = new DispatcherTimer();
+        public SimulationEngine engine;
+        private TimeSpan interval = new TimeSpan(0, 0, 0, 0, 10);
+        private int threadCounter;
+
         public MainWindow()
         {
-            InitializeComponent();                        
-            ImageBrush ib = new ImageBrush();
-            ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
-            WorldCanvas.Background = ib;
+            InitializeComponent();
+            //set background image
+            var bgBrush = new ImageBrush();
+            bgBrush.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
+            WorldCanvas.Background = bgBrush;
 
-            // connect to local elastic database
+            //connect to local elastic database
             var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node, defaultIndex: "attack_logs");
+            var settings = new ConnectionSettings(node, "attack_logs");
             _dbController = new ElasticController(settings);
-        
         }
 
+        /// <summary>
+        /// Adds log string to log RTB.
+        /// </summary>
+        /// <param name="log"></param>
         public void Log(string log)
-        {                      
+        {
             LogTextBox.Document.Blocks.Add(new Paragraph(new Run(log)));
             LogTextBox.ScrollToEnd();
         }
 
-        private void EntitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            //Properties.Settings.Default.balanceValue = e.NewValue;
-            //Properties.Settings.Default.Save();
-        }
-
+        /// <summary>
+        /// Saves balance value to settings.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void MySlider_DragCompleted(object sender, DragCompletedEventArgs e)
         {
-            Properties.Settings.Default.balanceValue = EntitySlider.Value;
-            Properties.Settings.Default.Save();
-            Console.WriteLine(@"Saved balanceValue = {0}", Properties.Settings.Default.balanceValue);
+            Settings.Default.balanceValue = EntitySlider.Value;
+            Settings.Default.Save();
+            Console.WriteLine(@"Saved balanceValue = {0}", Settings.Default.balanceValue);
         }
 
+        /// <summary>
+        /// Opens leveldesigner.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LevelDesignerButton_Click(object sender, RoutedEventArgs e)
         {
-           new LevelDesigner(this).Show();
+            new LevelDesigner(this).Show();
         }
 
+        /// <summary>
+        /// Empties canvas. Adds designed countries to Canvas, sets labels.
+        /// </summary>
         public void UpdateWorld()
         {
             WorldCanvas.Children.Clear();
-            foreach (var country in Environment.World)
+            foreach (Polygon country in Environment.World)
             {
                 country.Effect =
                     new DropShadowEffect
@@ -84,21 +92,26 @@ namespace ServersVSHackers_V1
                         ShadowDepth = 8,
                         Opacity = 0.7
                     };
-                var xMin = country.Points.Min(p => p.X);
-                var yMin = country.Points.Min(p => p.Y);
+                double xMin = country.Points.Min(p => p.X);
+                double yMin = country.Points.Min(p => p.Y);
                 var countrylabel = new TextBlock();
                 countrylabel.Text = country.Name;
                 countrylabel.Text = Name;
                 countrylabel.FontSize = 28;
                 countrylabel.TextDecorations = TextDecorations.Underline;
                 Panel.SetZIndex(countrylabel, 10);
-                Canvas.SetLeft(countrylabel, xMin+50.0);
-                Canvas.SetTop(countrylabel, yMin+50.0);
+                Canvas.SetLeft(countrylabel, xMin + 50.0);
+                Canvas.SetTop(countrylabel, yMin + 50.0);
                 WorldCanvas.Children.Add(countrylabel);
                 WorldCanvas.Children.Add(country);
             }
         }
 
+        /// <summary>
+        /// Lazy load engine, starts initialisation.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void StartButton_Click(object sender, RoutedEventArgs e)
         {
             if (engine == null)
@@ -108,32 +121,38 @@ namespace ServersVSHackers_V1
             engine.GenerateEntities();
         }
 
+        /// <summary>
+        /// Starts timer and 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AttackButton_Click(object sender, RoutedEventArgs e)
-        {            
-            _threadOne.Tick += ThreadOneTick;
-            _threadOne.Interval = interval;
-            _threadOne.Start();
+        {
+            _timerOne.Tick += TimerOneTick;
+            _timerOne.Interval = interval;
+            _timerOne.Start();
             threadCounter++;
             AttackButton.IsEnabled = false;
         }
 
 
-        private void ThreadOneTick(object sender, EventArgs e)
+        private void TimerOneTick(object sender, EventArgs e)
         {
-             engine.PerformAttack(Brushes.Orange);
+            engine.PerformAttack(Brushes.Orange);
         }
 
-        private void ThreadTwoTick(object sender, EventArgs e)
+        private void TimerThreeTick(object sender, EventArgs e)
         {
             threadCounter++;
-            Task.Factory.StartNew(AttackTwo);            
+            Task.Factory.StartNew(AttackTwo);
         }
 
-        private void ThreadThreeTick(object sender, EventArgs e)
+        private void TimerTwoTick(object sender, EventArgs e)
         {
             threadCounter++;
             Task.Factory.StartNew(AttackThree);
         }
+
         private void AttackTwo()
         {
             engine.PerformAttack(Brushes.IndianRed);
@@ -141,9 +160,9 @@ namespace ServersVSHackers_V1
 
         private void AttackThree()
         {
-            engine.PerformAttack(Brushes.GreenYellow);          
+            engine.PerformAttack(Brushes.GreenYellow);
         }
-        
+
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             AddAttack();
@@ -153,15 +172,15 @@ namespace ServersVSHackers_V1
         {
             if (threadCounter.Equals(1))
             {
-                _threadTwo.Tick += ThreadTwoTick;
-                _threadTwo.Interval = interval;
-                _threadTwo.Start();
+                _timerThree.Tick += TimerThreeTick;
+                _timerThree.Interval = interval;
+                _timerThree.Start();
             }
             else if (threadCounter.Equals(2))
             {
-                _threadThree.Tick += ThreadThreeTick;
-                _threadThree.Interval = interval;
-                _threadThree.Start();
+                _timerTwo.Tick += TimerTwoTick;
+                _timerTwo.Interval = interval;
+                _timerTwo.Start();
             }
             else
             {
@@ -171,38 +190,34 @@ namespace ServersVSHackers_V1
                     Log("ITS ENOUGH!!!");
                 }
             }
-
-
-
         }
+
         public void HackersWin(int c)
         {
-            _threadOne.Stop();
-            _threadTwo.Stop();
-            _threadThree.Stop();
-            MessageBox.Show("Hackers WIN!! They've stolen €" + c.ToString());
+            _timerOne.Stop();
+            _timerThree.Stop();
+            _timerTwo.Stop();
+            MessageBox.Show("Hackers WIN!! They've stolen €" + c);
         }
 
         public void ServersWin(int c)
         {
-            _threadOne.Stop();
-            _threadTwo.Stop();
-            _threadThree.Stop();
-            MessageBox.Show("Servers WIN!! They didn't lose €" + c.ToString());
-
+            _timerOne.Stop();
+            _timerThree.Stop();
+            _timerTwo.Stop();
+            MessageBox.Show("Servers WIN!! They didn't lose €" + c);
         }
 
-       
 
         private void IntervalSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.interval);
+            interval = TimeSpan.FromMilliseconds(Settings.Default.interval);
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            List<Attack> todb = new List<Attack>(engine._attacks);
-            if (_dbController.Insert(todb));
+            var todb = new List<Attack>(engine._attacks);
+            if (_dbController.Insert(todb)) ;
         }
     }
 }
