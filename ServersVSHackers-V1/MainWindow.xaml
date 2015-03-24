@@ -9,7 +9,7 @@
             <Grid>
                 <GroupBox Header="Balance" Margin="0,19,0,10">
                     <Grid >
-                        <Slider Thumb.DragCompleted="MySlider_DragCompleted" HorizontalAlignment="Center" Margin="10,38,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="EntitySlider" Maximum="9" Minimum="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=balanceValue}" ValueChanged="EntitySlider_ValueChanged" SmallChange="1" TickFrequency="1"/>
+                        <Slider Thumb.DragCompleted="MySlider_DragCompleted" HorizontalAlignment="Center" Margin="10,38,10,0" IsSnapToTickEnabled="True" VerticalAlignment="Top" Width="145" Name="EntitySlider" Maximum="9" Minimum="1" Value="{Binding Source={x:Static properties:Settings.Default}, Path=balanceValue}" SmallChange="1" TickFrequency="1"/>
                         <Label Content="Hackers" HorizontalAlignment="Left" Margin="0,55,0,0" VerticalAlignment="Top"/>
                         <Label Content="Servers" HorizontalAlignment="Left" Margin="117,55,0,0" VerticalAlignment="Top"/>
                         <TextBox HorizontalAlignment="Left" Height="23" Margin="70,10,0,0" TextWrapping="Wrap" Text="{Binding ElementName=EntitySlider,Path=Value}" VerticalAlignment="Top" Width="18" IsReadOnly="True"/>

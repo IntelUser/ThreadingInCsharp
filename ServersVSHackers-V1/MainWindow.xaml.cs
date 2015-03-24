@@ -40,7 +40,7 @@ namespace ServersVSHackers_V1
 
             //connect to local elastic database
             var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node, "attack_logs");
+            var settings = new ConnectionSettings(node);
             _dbController = new ElasticController(settings);
         }
 
@@ -217,7 +217,10 @@ namespace ServersVSHackers_V1
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             var todb = new List<Attack>(engine._attacks);
-            if (_dbController.Insert(todb)) ;
+            if (_dbController.Insert(todb))
+            {
+            }
+            
         }
     }
 }
