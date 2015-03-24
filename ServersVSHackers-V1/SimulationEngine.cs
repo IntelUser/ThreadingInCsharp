@@ -28,7 +28,7 @@ namespace ServersVSHackers_V1
         private readonly List<Country> _countryList = new List<Country>();
         private readonly IDatabaseController _dbController;
         private readonly MainWindow _mainWindow;
-        private const string ATTACK_LOG_TABLE = "attack_logs";
+       
         private const int BATCH_SIZE = 1000;
         private ConcurrentQueue<Attack> _attacks = new ConcurrentQueue<Attack>();
        
@@ -53,7 +53,7 @@ namespace ServersVSHackers_V1
             BustedHackers = new ConcurrentBag<IEntity>();
             ActiveServers = new ConcurrentQueue<IEntity>();
             HackedServers = new ConcurrentBag<IEntity>();
-            InitDatabase();
+            
 
         }
 
@@ -394,10 +394,7 @@ namespace ServersVSHackers_V1
             public bool Used;
         }
 
-        private void InitDatabase()
-        {
-            _dbController.CreateDatabase(ATTACK_LOG_TABLE);
-        }
+       
 
         private void StoreAttack(Attack attack)
         {

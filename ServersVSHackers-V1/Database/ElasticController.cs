@@ -11,11 +11,19 @@ namespace ServersVSHackers_V1.Database
     class ElasticController : IDatabaseController
     {
         private readonly ElasticClient _client;
+        private const string ATTACK_LOG_TABLE = "attack_logs";
 
         public ElasticController(IConnectionSettingsValues settings)
         {
             _client = new ElasticClient(settings);
+            if (!CreateDatabase(ATTACK_LOG_TABLE))
+            {
+                Console.WriteLine("Index not created");
+            }
         }
+
+       
+
 
         public bool InsertBatch<T>(IEnumerable<T> items) where T : class
         {
@@ -35,7 +43,7 @@ namespace ServersVSHackers_V1.Database
         {
             var myItem = new Hacker(1, 1);
             _client.Index(myItem, i => 
-                i.Index(("myIndexForSomething")));
+                i.Index((ATTACK_LOG_TABLE)));
 
             return true;
         }
