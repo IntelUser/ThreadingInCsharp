@@ -38,7 +38,7 @@ namespace ServersVSHackers_V1
             bgBrush.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = bgBrush;
 
-            /
+            
         }
 
         /// <summary>
@@ -232,10 +232,14 @@ namespace ServersVSHackers_V1
             interval = TimeSpan.FromMilliseconds(Settings.Default.interval);
         }
 
+        /// <summary>
+        /// Opens statistics window.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var todb = new List<Attack>(engine._attacks);
-            if (_dbController.Insert(todb)) ;
+            new Statistics(engine._attacks).Show();
         }
     }
 }

@@ -159,7 +159,7 @@ namespace ServersVSHackers_V1
                     {
                         var hacker = (Hacker)attacker;
                         var server = (Server)defender;
-                        
+                        var stolenCash = 0;
 
                         var winner = DecideWinner(hacker, server);
                         SetWinner(winner);
@@ -171,6 +171,7 @@ namespace ServersVSHackers_V1
                         if (winner.GetType() == typeof (Hacker))
                         {
                             hacker.StealCash(server);
+                            stolenCash = server.Cash;
                             RemoveUiElement(server.Coordinate);
                         }
                         else
@@ -178,7 +179,7 @@ namespace ServersVSHackers_V1
                             RemoveUiElement(hacker.Coordinate);
                         }
 
-                        StoreAttack(new Attack(hacker, server, DateTime.Now));
+                        StoreAttack(new Attack(hacker, server, DateTime.Now, stolenCash));
 
                         #endregion
                     }
