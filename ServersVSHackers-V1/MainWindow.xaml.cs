@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Nest;
+using ServersVSHackers_V1.Database;
 
 namespace ServersVSHackers_V1
 {
@@ -31,13 +32,18 @@ namespace ServersVSHackers_V1
         //default interval is 1ms
         private TimeSpan interval = new TimeSpan(0, 0, 0, 0, 10);
         public SimulationEngine engine;
+        private readonly IDatabaseController _dbController;
         public MainWindow()
         {
             InitializeComponent();                        
             ImageBrush ib = new ImageBrush();
             ib.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = ib;
-            
+
+            // connect to local elastic database
+            var node = new Uri("http://localhost:9200");
+            var settings = new ConnectionSettings(node, defaultIndex: "attack_logs");
+            _dbController = new ElasticController(settings);
         
         }
 
@@ -191,6 +197,12 @@ namespace ServersVSHackers_V1
         private void IntervalSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.interval);
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            List<Attack> todb = new List<Attack>(engine._attacks);
+            if (_dbController.Insert(todb));
         }
     }
 }
