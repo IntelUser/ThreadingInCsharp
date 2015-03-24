@@ -1,23 +1,23 @@
-﻿namespace ServersVSHackers_V1
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace ServersVSHackers_V1
 {
-    /// <summary>
-    ///     <author>Reinier Weerts</author>
-    ///     <author>Johannes Elzinga</author>
-    ///     <date>02-2015</date>
-    ///     Describes a server, implements IEntity interface.
-    /// </summary>
-    internal class Server : IEntity
+    public class Server : IEntity
     {
+        public int Cash { get;  set; }
+        public int ProtectionLevel { get; private set; }
+        public Country Country { get; set; }
+        public SimulationEngine.ValidPoint Coordinate { get; set; }
+        bool IEntity.IsAlive { get; set; }
+
         public Server(int cashAmount, int protectionLevel)
         {
             Cash = cashAmount;
             ProtectionLevel = protectionLevel;
         }
-
-        public int ProtectionLevel { get; private set; }
-        public int Cash { get; set; }
-        public Country Country { get; set; }
-        public SimulationEngine.ValidPoint Coordinate { get; set; }
-        bool IEntity.IsAlive { get; set; }
     }
 }
