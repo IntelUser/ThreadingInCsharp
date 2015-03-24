@@ -199,6 +199,11 @@ namespace ServersVSHackers_V1
             interval = TimeSpan.FromMilliseconds(Properties.Settings.Default.interval);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
             List<Attack> todb = new List<Attack>(engine._attacks);
