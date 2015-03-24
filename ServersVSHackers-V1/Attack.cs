@@ -9,7 +9,7 @@ namespace ServersVSHackers_V1
     ///     Describes an attack between server and hacker.
     ///     Is created after successful attack to be written to DB.
     /// </summary>
-    internal sealed class Attack
+    public sealed class Attack
     {
         private readonly Hacker _hacker;
         private readonly Server _server;

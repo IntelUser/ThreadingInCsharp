@@ -6,7 +6,7 @@
     ///     <date>02-2015</date>
     ///     Describes a hacker, implements IEntity interface.
     /// </summary>
-    internal class Hacker : IEntity
+    public class Hacker : IEntity
     {
         public Hacker(int id, int skillLevel)
         {

@@ -6,7 +6,7 @@
     ///     <date>02-2015</date>
     ///     Describes a server, implements IEntity interface.
     /// </summary>
-    internal class Server : IEntity
+    public class Server : IEntity
     {
         public Server(int cashAmount, int protectionLevel)
         {
