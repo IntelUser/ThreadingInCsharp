@@ -71,7 +71,6 @@
     </ApplicationDefinition>
     <Compile Include="Attack.cs" />
     <Compile Include="Country.cs" />
-    <Compile Include="Database\ElasticController.cs" />
     <Compile Include="Database\IDatabaseController.cs" />
     <Compile Include="Environment.cs" />
     <Compile Include="ExtensionMethods.cs" />

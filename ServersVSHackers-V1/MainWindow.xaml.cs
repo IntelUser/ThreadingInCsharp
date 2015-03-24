@@ -38,10 +38,7 @@ namespace ServersVSHackers_V1
             bgBrush.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = bgBrush;
 
-            //connect to local elastic database
-            var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node);
-            _dbController = new ElasticController(settings);
+            
         }
 
         /// <summary>
@@ -216,10 +213,6 @@ namespace ServersVSHackers_V1
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var todb = new List<Attack>(engine._attacks);
-            if (_dbController.Insert(todb))
-            {
-            }
             
         }
     }
