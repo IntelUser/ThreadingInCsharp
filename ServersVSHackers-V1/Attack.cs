@@ -14,7 +14,7 @@ namespace ServersVSHackers_V1
         private readonly Hacker _hacker;
         private readonly Server _server;
         private readonly DateTime _timeStamp;
-        //
+
         ///
         public Attack(Hacker hacker, Server server, DateTime timeStamp)
         {
