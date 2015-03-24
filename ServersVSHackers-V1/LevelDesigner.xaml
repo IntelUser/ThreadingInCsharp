@@ -33,7 +33,7 @@
     </Window.Resources>
     <Grid Name="Gridx" VerticalAlignment="Top">
         <Border x:Name="CanvasBorder" BorderBrush="Black" BorderThickness="2" Height="{Binding ActualHeight, ElementName=CreateCanvas}" Width="{Binding ActualWidth, ElementName=CreateCanvas}" VerticalAlignment="Top">
-            <Canvas x:Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="0,0,0,0" VerticalAlignment="Top"  Width="1400"/>
+            <Canvas x:Name="CreateCanvas" HorizontalAlignment="Left" Height="750" Margin="0.4,0.4,0,-4" VerticalAlignment="Top"  Width="1388"/>
         </Border>
         <TextBox Name="CountryTextBox" Margin="10,774,1247,46" TextWrapping="Wrap" Text="DefaultCountry" PreviewKeyDown="CountryTextBox_PreviewKeyDown" />
         <Button Name="SaveCountryButton" Content="Save Country" HorizontalAlignment="Left" Margin="167,774,0,0" VerticalAlignment="Top" Width="76" Click="SaveCountryButton_Click"/>

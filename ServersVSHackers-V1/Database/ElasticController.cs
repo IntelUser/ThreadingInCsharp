@@ -17,10 +17,27 @@ namespace ServersVSHackers_V1.Database
             _client = new ElasticClient(settings);
         }
 
-        public bool Insert<T>(IEnumerable<T> items)
+        public bool InsertBatch<T>(IEnumerable<T> items) where T : class
         {
-            var response = _client.Index(items);
-            return response.Created;
+
+            var descriptor = new BulkDescriptor();
+            descriptor.IndexMany<T>(items.ToList());
+            descriptor.RequestConfiguration(r => r.MaxRetries(3));
+          
+            
+           var result = _client.Bulk(descriptor);
+            
+            
+            return result.IsValid;
+        }
+
+        public bool Insert(IEnumerable<Attack> attacks)
+        {
+            var myItem = new Hacker(1, 1);
+            _client.Index(myItem, i => 
+                i.Index(("myIndexForSomething")));
+
+            return true;
         }
 
         public bool RemoveDatabase(string databaseName)

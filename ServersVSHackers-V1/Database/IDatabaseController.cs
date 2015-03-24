@@ -15,7 +15,7 @@ namespace ServersVSHackers_V1.Database
         /// <typeparam name="T"> Represents the type of object that needs to be stored</typeparam>
         /// <param name="item">the object itself</param>
         /// <returns>the execution time in milliseconds</returns>
-        bool Insert<T>(IEnumerable<T> items);
+        bool InsertBatch<T>(IEnumerable<T> items) where T : class;
         /// <summary>
         /// Removes a complete database. Use with caution! Data is lost completely and cannot be recovered!
         /// </summary>
@@ -32,6 +32,6 @@ namespace ServersVSHackers_V1.Database
         /// <returns>An Ienumerable with mathing results</returns>
         IEnumerable<T> Search<T>(String databaseName, int limitResults = 10) where T : class;
 
-
+        bool Insert(IEnumerable<Attack> attacks);
     }
 }

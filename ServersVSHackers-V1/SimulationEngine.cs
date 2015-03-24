@@ -29,10 +29,16 @@ namespace ServersVSHackers_V1
         private readonly IDatabaseController _dbController;
         private readonly MainWindow _mainWindow;
         private const string ATTACK_LOG_TABLE = "attack_logs";
+        private const int BATCH_SIZE = 1000;
+        private ConcurrentQueue<Attack> _attacks = new ConcurrentQueue<Attack>();
+       
+
 
         public int NumberOfHackers, NumberOfServers;
-        public ConcurrentBag<IEntity> ActiveHackers, BustedHackers;
-        public ConcurrentBag<IEntity> ActiveServers, HackedServers;
+
+        public ConcurrentQueue<IEntity> ActiveHackers, ActiveServers; 
+        public ConcurrentBag<IEntity> HackedServers, BustedHackers;
+         
         
 
         public SimulationEngine(MainWindow window)
@@ -40,13 +46,14 @@ namespace ServersVSHackers_V1
             _mainWindow = window;
             // connect to local elastic database
             var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node, defaultIndex: ATTACK_LOG_TABLE);
+            var settings = new ConnectionSettings(node);
             _dbController = new ElasticController(settings);
 
-           ActiveHackers = new ConcurrentBag<IEntity>();
-           BustedHackers = new ConcurrentBag<IEntity>();
-           ActiveServers = new ConcurrentBag<IEntity>();
-           HackedServers = new ConcurrentBag<IEntity>();
+            ActiveHackers = new ConcurrentQueue<IEntity>();
+            BustedHackers = new ConcurrentBag<IEntity>();
+            ActiveServers = new ConcurrentQueue<IEntity>();
+            HackedServers = new ConcurrentBag<IEntity>();
+            InitDatabase();
 
         }
 
@@ -82,12 +89,12 @@ namespace ServersVSHackers_V1
             _mainWindow.HackerAmountTextBlock.Text = NumberOfHackers.ToString();
             var sw = new Stopwatch();
             sw.Start();
-            Parallel.For(0, NumberOfServers, i => ActiveServers.Add(new Server(
+            Parallel.For(0, NumberOfServers, i => ActiveServers.Enqueue(new Server(
                                                                                 Generator.GetRandomNumber(100, 10000),
                                                                                 Generator.GetRandomNumber(1, 10))));
 
 
-            Parallel.For(0, NumberOfHackers, i => ActiveHackers.Add(new Hacker(
+            Parallel.For(0, NumberOfHackers, i => ActiveHackers.Enqueue(new Hacker(
                                                                                 Generator.GetRandomNumber(100, 10000),
                                                                                 Generator.GetRandomNumber(1, 10))));
 
@@ -119,11 +126,14 @@ namespace ServersVSHackers_V1
                 
                 var lineFade = new DoubleAnimation(0.0, TimeSpan.FromMilliseconds(500));
 
-                var succesAttacker = ActiveHackers.TryTake(out attacker);
-                var succesDefender = ActiveServers.TryTake(out defender);
+                var succesAttacker = ActiveHackers.TryDequeue(out attacker);
+                var succesDefender = ActiveServers.TryDequeue(out defender);
 
                 if (!succesDefender || !succesAttacker)
                 {
+                    List<Attack> todb = new List<Attack>(_attacks);
+                    if(_dbController.Insert(todb)) _mainWindow.Log(String.Format("{0} Logs inserted", _attacks.Count));
+
                     if (ActiveHackers.IsEmpty)
                     {
                         //DoSomething
@@ -171,8 +181,10 @@ namespace ServersVSHackers_V1
                         {
                             RemoveUiElement(hacker.Coordinate);
                         }
-                       
-                    #endregion
+
+                        StoreAttack(new Attack(hacker, server, DateTime.Now));
+
+                        #endregion
                     }
 
                     var line = new Line
@@ -222,13 +234,13 @@ namespace ServersVSHackers_V1
             if (entity.GetType() == typeof (Hacker))
             {
                 HackedServers.Add(entity);      // add server to hackedlist  
-                ActiveHackers.Add(entity);      // put the hacker back in the list
+                ActiveHackers.Enqueue(entity);      // put the hacker back in the list
                 NumberOfServers--;              // decrease number of servers
             }
             else if (entity.GetType() == typeof (Server))
             {
                 BustedHackers.Add(entity);          // add hacker to bustlist
-                ActiveServers.Add(entity);          // put the server back in the list
+                ActiveServers.Enqueue(entity);          // put the server back in the list
                 NumberOfHackers--;                  // decrease hackers
             }
         }
@@ -282,13 +294,12 @@ namespace ServersVSHackers_V1
             {
                 
                 hacker.Coordinate = hacker.Country.GetValidPoint();
-                Console.WriteLine("hacker x= {0}, y= {1}", hacker.Coordinate.X, hacker.Coordinate.Y);
+                //Console.WriteLine("hacker x= {0}, y= {1}", hacker.Coordinate.X, hacker.Coordinate.Y);
             }
             foreach (var server in ActiveServers)
             {
-
                 server.Coordinate = server.Country.GetValidPoint();
-                Console.WriteLine("server x= {0}, y= {1}", server.Coordinate.X, server.Coordinate.Y);
+                //Console.WriteLine("server x= {0}, y= {1}", server.Coordinate.X, server.Coordinate.Y);
             }
             _syncEvent.Set();
 
@@ -375,6 +386,7 @@ namespace ServersVSHackers_V1
             }
             return isInside;
         }
+       
         public struct ValidPoint
         {
             public double X;
@@ -387,15 +399,12 @@ namespace ServersVSHackers_V1
             _dbController.CreateDatabase(ATTACK_LOG_TABLE);
         }
 
-        private void StoreAttacks(IEnumerable<Attack> attacks )
+        private void StoreAttack(Attack attack)
         {
-            _dbController.Insert(attacks);
+            _attacks.Enqueue(attack);
+                
+            
+           
         }
-
-
-
-
-
-
     }
 }

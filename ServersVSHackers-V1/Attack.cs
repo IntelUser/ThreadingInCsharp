@@ -12,7 +12,9 @@ namespace ServersVSHackers_V1
         private readonly Server _server;
         private readonly DateTime _timeStamp;
 
-        public Hacker Hacker { get { return _hacker; } }
+        public Hacker Hacker { get { return _hacker; }
+       
+        }
         public Server Server { get { return _server; } }
         public DateTime TimeStamp { get { return _timeStamp; } }
 
