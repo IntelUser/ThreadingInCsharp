@@ -157,6 +157,7 @@ namespace ServersVSHackers_V1
                     #region attack
                     if (succesAttacker && succesDefender)
                     {
+                        var moneyStolenAtAttack = 0;
                         var hacker = (Hacker)attacker;
                         var server = (Server)defender;
                         
@@ -172,13 +173,14 @@ namespace ServersVSHackers_V1
                         {
                             hacker.StealCash(server);
                             RemoveUiElement(server.Coordinate);
+                            moneyStolenAtAttack = server.Cash;
                         }
                         else
                         {
                             RemoveUiElement(hacker.Coordinate);
                         }
 
-                        StoreAttack(new Attack(hacker, server, DateTime.Now));
+                        StoreAttack(new Attack(hacker, server, DateTime.Now, moneyStolenAtAttack ));
 
                         #endregion
                     }
