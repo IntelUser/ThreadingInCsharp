@@ -38,7 +38,7 @@ namespace ServersVSHackers_V1
             bgBrush.ImageSource = new BitmapImage(new Uri(@"ocean.jpg", UriKind.Relative));
             WorldCanvas.Background = bgBrush;
 
-            
+            /
         }
 
         /// <summary>
@@ -213,7 +213,8 @@ namespace ServersVSHackers_V1
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            
+            var todb = new List<Attack>(engine._attacks);
+            if (_dbController.Insert(todb)) ;
         }
     }
 }
