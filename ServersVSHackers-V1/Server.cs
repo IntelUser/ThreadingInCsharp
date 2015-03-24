@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    class Server : IEntity
+    public class Server : IEntity
     {
         public int Cash { get;  set; }
         public int ProtectionLevel { get; private set; }

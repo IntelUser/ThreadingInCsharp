@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ServersVSHackers_V1
 {
-    sealed class Attack
+    public sealed class Attack
     {
         private readonly Hacker _hacker;
         private readonly Server _server;

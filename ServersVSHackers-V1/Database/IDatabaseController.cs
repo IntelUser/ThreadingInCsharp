@@ -12,10 +12,10 @@ namespace ServersVSHackers_V1.Database
         /// <summary>
         /// Inserts an object into a database. 
         /// </summary>
-        /// <typeparam name="T"> Represents the type of object that needs to be stored</typeparam>
+        /// <typeparam name="Attack"> Represents the type of object that needs to be stored</typeparam>
         /// <param name="item">the object itself</param>
         /// <returns>the execution time in milliseconds</returns>
-        bool InsertBatch<T>(IEnumerable<T> items) where T : class;
+        bool InsertBatch(IEnumerable<Attack> items);
         /// <summary>
         /// Removes a complete database. Use with caution! Data is lost completely and cannot be recovered!
         /// </summary>

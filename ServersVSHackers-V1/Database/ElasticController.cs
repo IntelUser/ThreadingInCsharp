@@ -25,13 +25,13 @@ namespace ServersVSHackers_V1.Database
        
 
 
-        public bool InsertBatch<T>(IEnumerable<T> items) where T : class
+        public bool InsertBatch(IEnumerable<Attack> items)
         {
 
             var descriptor = new BulkDescriptor();
-            descriptor.IndexMany<T>(items.ToList());
+            descriptor.IndexMany<Attack>(items);
             descriptor.RequestConfiguration(r => r.MaxRetries(3));
-          
+            
             
            var result = _client.Bulk(descriptor);
             
@@ -41,9 +41,12 @@ namespace ServersVSHackers_V1.Database
 
         public bool Insert(IEnumerable<Attack> attacks)
         {
-            var myItem = new Hacker(1, 1);
-            _client.Index(myItem, i => 
-                i.Index((ATTACK_LOG_TABLE)));
+            foreach (var atk in attacks)
+            {
+                _client.Index(atk, i =>
+               i.Index((ATTACK_LOG_TABLE)));
+            }
+           
 
             return true;
         }

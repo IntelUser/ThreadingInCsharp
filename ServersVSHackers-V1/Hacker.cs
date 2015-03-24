@@ -7,7 +7,7 @@ using System.Xml.Schema;
 
 namespace ServersVSHackers_V1
 {
-    class Hacker : IEntity
+    public class Hacker : IEntity
     {
         public int Id { get; private set; }
         public bool IsAlive { get; set; }

@@ -26,11 +26,11 @@ namespace ServersVSHackers_V1
     {
         private readonly ManualResetEvent _syncEvent = new ManualResetEvent(false);
         private readonly List<Country> _countryList = new List<Country>();
-        private readonly IDatabaseController _dbController;
+       
         private readonly MainWindow _mainWindow;
        
         private const int BATCH_SIZE = 1000;
-        private ConcurrentQueue<Attack> _attacks = new ConcurrentQueue<Attack>();
+        public ConcurrentQueue<Attack> _attacks = new ConcurrentQueue<Attack>();
        
 
 
@@ -44,10 +44,7 @@ namespace ServersVSHackers_V1
         public SimulationEngine(MainWindow window)
         {
             _mainWindow = window;
-            // connect to local elastic database
-            var node = new Uri("http://localhost:9200");
-            var settings = new ConnectionSettings(node);
-            _dbController = new ElasticController(settings);
+          
 
             ActiveHackers = new ConcurrentQueue<IEntity>();
             BustedHackers = new ConcurrentBag<IEntity>();
@@ -131,8 +128,7 @@ namespace ServersVSHackers_V1
 
                 if (!succesDefender || !succesAttacker)
                 {
-                    List<Attack> todb = new List<Attack>(_attacks);
-                    if(_dbController.Insert(todb)) _mainWindow.Log(String.Format("{0} Logs inserted", _attacks.Count));
+                    
 
                     if (ActiveHackers.IsEmpty)
                     {
