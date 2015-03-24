@@ -132,24 +132,40 @@ namespace ServersVSHackers_V1
             AttackButton.IsEnabled = false;
         }
 
-
+        /// <summary>
+        /// Triggered on _timerOne tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerOneTick(object sender, EventArgs e)
         {
             engine.PerformAttack(Brushes.Orange);
         }
 
-        private void TimerThreeTick(object sender, EventArgs e)
-        {
-            threadCounter++;
-            Task.Factory.StartNew(AttackTwo);
-        }
-
+        /// <summary>
+        /// Triggered on _timerTwo tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TimerTwoTick(object sender, EventArgs e)
         {
             threadCounter++;
             Task.Factory.StartNew(AttackThree);
         }
 
+
+        /// <summary>
+        /// Triggered on _timerThree tick
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TimerThreeTick(object sender, EventArgs e)
+        {
+            threadCounter++;
+            Task.Factory.StartNew(AttackTwo);
+        }
+
+        
         private void AttackTwo()
         {
             engine.PerformAttack(Brushes.IndianRed);
@@ -160,11 +176,14 @@ namespace ServersVSHackers_V1
             engine.PerformAttack(Brushes.GreenYellow);
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void PerformAttack_Click(object sender, RoutedEventArgs e)
         {
             AddAttack();
         }
 
+        /// <summary>
+        /// Adds new attack Task and start timer if amount of Tasks less than 4
+        /// </summary>
         private void AddAttack()
         {
             if (threadCounter.Equals(1))
@@ -188,6 +207,8 @@ namespace ServersVSHackers_V1
                 }
             }
         }
+
+        //testcomment
 
         public void HackersWin(int c)
         {
