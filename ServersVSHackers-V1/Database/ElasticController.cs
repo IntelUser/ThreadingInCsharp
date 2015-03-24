@@ -41,12 +41,21 @@ namespace ServersVSHackers_V1.Database
 
         public bool Insert(IEnumerable<Attack> attacks)
         {
+            int index = 0;
             foreach (var atk in attacks)
             {
+                if (index > 10)
+                {
+                    break;
+                }
                 _client.Index(atk, i =>
-               i.Index((ATTACK_LOG_TABLE)));
+             i.Index((ATTACK_LOG_TABLE)));
+                index++;
+
             }
+              
            
+          
 
             return true;
         }
